@@ -1,0 +1,26 @@
+***REMOVED***
+  "name": "e-school",
+  "version": "1.0.0",
+  "description": "E School app",
+  "main": "index.js",
+  "scripts": ***REMOVED***
+    "test": "echo \"Error: no test specified\" && exit 1"
+  ***REMOVED***,
+  "repository": ***REMOVED***
+    "type": "git",
+    "url": "git+https://github.com/hugoyervides/e-school.git"
+  ***REMOVED***,
+  "keywords": [
+    "e-school"
+  ],
+  "author": "Victor Hugo Oyervides, Obed Gonzalez Moreno, Lewis Erick, Gabriel",
+  "license": "ISC",
+  "bugs": ***REMOVED***
+    "url": "https://github.com/hugoyervides/e-school/issues"
+  ***REMOVED***,
+  "homepage": "https://github.com/hugoyervides/e-school#readme",
+  "dependencies": ***REMOVED***
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2"
+  ***REMOVED***
+***REMOVED***
