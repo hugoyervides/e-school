@@ -4,6 +4,8 @@
   "description": "E School app",
   "main": "index.js",
   "scripts": ***REMOVED***
+    "start": "node index.js",
+    
     "test": "echo \"Error: no test specified\" && exit 1"
   ***REMOVED***,
   "repository": ***REMOVED***
