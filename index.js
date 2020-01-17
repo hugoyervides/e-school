@@ -4,7 +4,9 @@ const express = require('express')
 const app = express();
 
 app.get('/', (req, res) => ***REMOVED***
-  res.send('Hola Mundo!')
+  return res.status( 201 ).json(***REMOVED***
+    "message" : "Hello World!"
+  ***REMOVED***);
 ***REMOVED***);
 
 app.listen(PORT, () => ***REMOVED***
