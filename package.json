@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": ***REMOVED***
     "start": "node index.js",
-    
     "test": "echo \"Error: no test specified\" && exit 1"
   ***REMOVED***,
   "repository": ***REMOVED***
@@ -22,6 +21,8 @@
   ***REMOVED***,
   "homepage": "https://github.com/hugoyervides/e-school#readme",
   "dependencies": ***REMOVED***
+    "bulma": "^0.8.0",
+    "bulma-start": "0.0.3",
     "express": "^4.17.1",
     "nodemon": "^2.0.2"
   ***REMOVED***
