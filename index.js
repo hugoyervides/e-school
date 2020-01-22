@@ -9,5 +9,5 @@ app.get('/', (req, res) => ***REMOVED***
 ***REMOVED***);
 
 app.listen(PORT, () => ***REMOVED***
-  console.log('app listening on port' + PORT);
+  console.log('app listening on port ' + PORT);
 ***REMOVED***);
