@@ -1,6 +1,6 @@
-var app = new Vue(***REMOVED***
+var app = new Vue({
     el: '#app',
-    data: ***REMOVED***
+    data: {
       message: 'Hello Vue!'
-    ***REMOVED***
-  ***REMOVED***)
+    }
+  })

@@ -1,29 +1,39 @@
-***REMOVED***
+{
   "name": "e-school",
   "version": "1.0.0",
   "description": "E School app",
   "main": "index.js",
-  "scripts": ***REMOVED***
+  "scripts": {
     "start": "node index.js",
+<<<<<<< HEAD
     "test": "echo \"Error: no test specified\" && exit 1"
-  ***REMOVED***,
-  "repository": ***REMOVED***
+=======
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+>>>>>>> 560e9d6722bc7bbdd74a9d5582b57f48c1ae13a8
+  },
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/hugoyervides/e-school.git"
-  ***REMOVED***,
+  },
   "keywords": [
     "e-school"
   ],
   "author": "Victor Hugo Oyervides, Obed Gonzalez Moreno, Lewis Erick, Gabriel",
   "license": "ISC",
-  "bugs": ***REMOVED***
+  "bugs": {
     "url": "https://github.com/hugoyervides/e-school/issues"
-  ***REMOVED***,
+  },
   "homepage": "https://github.com/hugoyervides/e-school#readme",
-  "dependencies": ***REMOVED***
+  "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+<<<<<<< HEAD
     "firebase-admin": "^8.9.1",
     "nodemon": "^2.0.2"
-  ***REMOVED***
-***REMOVED***
+=======
+    "nodemon": "^2.0.2",
+    "vue": "^2.6.11"
+>>>>>>> 560e9d6722bc7bbdd74a9d5582b57f48c1ae13a8
+  }
+}
