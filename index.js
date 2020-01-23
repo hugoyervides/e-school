@@ -16,5 +16,9 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
+<<<<<<< HEAD
   console.log('app listening on port' + PORT);
+=======
+  console.log('app listening on port ' + PORT);
+>>>>>>> 560e9d6722bc7bbdd74a9d5582b57f48c1ae13a8
 });
