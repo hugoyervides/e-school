@@ -6,102 +6,88 @@
     <title>Landing Page</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   </head>
   <body>
   <section class="section">
     <div class="container">
-        <h1 class="title is-1">E-School</h1>
-        <h2 class="title is-2">Featured Courses</h2>
+        <div id="appNavBar">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+              <a class="navbar-item">
+                <img v-bind:src="logo" width="auto">
+              </a>
+          
+              <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+              </a>
+            </div>
+            
+            <div id="navbarBasicExample" class="navbar-menu">
+              <div class="navbar-start">
+                <a v-for="item in navbarItems" class="navbar-item">
+                  {{ item.text }}
+                </a>
+                </div>
+              </div>
+          
+              <div class="navbar-end">
+                <div class="navbar-item">
+                  <div class="buttons">
+                    <a class="button is-primary">
+                      <strong>{{ signup }}</strong>
+                    </a>
+                    <a class="button is-light">
+                      {{ login }}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </nav>
+        </div>
+        <div id="appCompanyTitle">
+            <h1 class="title is-1">{{ company }}</h1>
+        </div>
+        <div id="appFeaturedCourses">
+        <h2 class="title is-2">{{ featuredCoursesTitle }}</h2>
         <div class="tile is-ancestor">
-            <div class="tile is-4">
+            <div v-for="course in featuredCourses" class="tile is-4">
                 <div class="card">
                 <div class="card-image">
-                    <figure class="image is-4by3">
-                    <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+                    <figure class="image">
+                    <img v-bind:src="course.img" alt="Placeholder image">
                     </figure>
                 </div>
                 <div class="card-content">
                     <div class="media">
                         <div class="media-left">
                             <figure class="image is-48x48">
-                                <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                <img v-bind:src="course.author.img" alt="Placeholder image">
                             </figure>
                         </div>
                         <div class="media-content">
-                            <p class="title is-4">John Smith</p>
-                            <p class="subtitle is-6">@johnsmith</p>
+                            <p class="title is-4">{{ course.author.name }}</p>
+                            <p class="subtitle is-6">{{ course.author.title }}</p>
                         </div>
                     </div>
                     <div class="content">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Phasellus nec iaculis mauris. <a>@bulmaio</a>.
-                        <a href="#">#css</a> <a href="#">#responsive</a>
-                        <br>
-                        <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                        {{ course.description }}
                     </div>
-                </div>
-                </div>
-            </div>
-            <div class="tile is-4">
-                <div class="card">
-                <div class="card-image">
-                    <figure class="image is-4by3">
-                    <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
-                    </figure>
-                </div>
-                <div class="card-content">
-                    <div class="media">
-                        <div class="media-left">
-                            <figure class="image is-48x48">
-                                <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
-                            </figure>
-                        </div>
-                        <div class="media-content">
-                            <p class="title is-4">John Smith</p>
-                            <p class="subtitle is-6">@johnsmith</p>
-                        </div>
-                    </div>
-                    <div class="content">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Phasellus nec iaculis mauris. <a>@bulmaio</a>.
-                        <a href="#">#css</a> <a href="#">#responsive</a>
-                        <br>
-                        <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                    </div>
-                </div>
-                </div>
-            </div>
-            <div class="tile is-4">
-                <div class="card">
-                <div class="card-image">
-                    <figure class="image is-4by3">
-                    <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
-                    </figure>
-                </div>
-                <div class="card-content">
-                    <div class="media">
-                        <div class="media-left">
-                            <figure class="image is-48x48">
-                                <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
-                            </figure>
-                        </div>
-                        <div class="media-content">
-                            <p class="title is-4">John Smith</p>
-                            <p class="subtitle is-6">@johnsmith</p>
-                        </div>
-                    </div>
-                    <div class="content">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Phasellus nec iaculis mauris. <a>@bulmaio</a>.
-                        <a href="#">#css</a> <a href="#">#responsive</a>
-                        <br>
-                        <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                    <div class="action">
+                        <a class="button is-primary">
+                            Enroll
+                        </a>
                     </div>
                 </div>
                 </div>
             </div>
         </div>
+        </div>
     </div>
   </section>
+  <script type="text/javascript" src="./static/home.js"></script>
   </body>
 </html>
