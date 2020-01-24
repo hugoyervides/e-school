@@ -170,6 +170,21 @@ Vue.component("hero", {
             </div>`
 })
 
+Vue.component("hero-no-button", {
+  props: ["title", "body"],
+  template: `
+              <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">
+                        {{ title }}
+                    </h1>
+                    <h2 class="subtitle">
+                        {{ body }}
+                    </h2>
+                </div>
+            </div>`
+})
+
 var heroApp = new Vue({
   el: "#appHero",
   data: {
@@ -187,5 +202,13 @@ var heroApp2 = new Vue({
     heroDescription: `Our product is made possible by the collaboration of our stakeholders:`,
     heroTitle: `Main Features`,
     heroAction: `Create Account`
+  }
+})
+
+var heroApp3 = new Vue({
+  el: "#appHero3",
+  data: {
+    heroDescription: `If you still have questions, we're happy to help.`,
+    heroTitle: `Contact Us`
   }
 })
