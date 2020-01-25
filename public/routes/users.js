@@ -29,7 +29,6 @@ const serviceAccount =
   "client_x509_cert_url": FIREBASE_CLIENT_CERT_URL
 };
 
-console.log(serviceAccount)
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://eschool-a6821.firebaseio.com"
