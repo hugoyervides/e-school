@@ -12,9 +12,10 @@ app.use(bodyParser.json());
 app.use("/api/", users)
 
 app.get('/', (req, res) => {
-  return res.sendFile("home.html", {root: "public"});
+  return res.sendFile("course.html", {root: "public"});
 });
 
 app.listen(PORT, () => {
   console.log('app listening on port' + PORT);
 });
+
