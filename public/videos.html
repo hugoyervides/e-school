@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>Videos</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <!-- Navbar -->
+            <div id = "appNavBar">
+                <navcomponent></navcomponent>
+            </div>
+            <div id='vvideo'>
+                <div class="columns">
+                    <div class="column">
+                        <videoviewer url="https://www.youtube.com/embed/tgbNymZ7vqY" title="Variables" course="C++" description="Introduction to variables in C++"></videoviewer>
+                    </div>
+                    <div class="column">
+                        <videoviewer url="https://www.youtube.com/embed/vLnPwxZdW4Y" title="Objects" course="C++" description="Introduction to C++ objects"></videoviewer>
+                    </div>
+                    <div class="column">
+                        <videoviewer url="https://www.youtube.com/embed/ZOKLjJF54Xc" title="Estructuras" course="C++" description="Estructuras en C++ basicas"></videoviewer>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="./static/videos.js"></script>
+    </body>
+</html>

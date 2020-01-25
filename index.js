@@ -14,6 +14,9 @@ app.use("/api/", users)
 app.get('/', (req, res) => {
   return res.sendFile("home.html", {root: "public"});
 });
+app.get('/videos', (req, res) => {
+  return res.sendFile("videos.html", {root: "public"})
+});
 
 app.listen(PORT, () => {
   console.log('app listening on port' + PORT);
