@@ -16,5 +16,10 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
+<<<<<<< HEAD
   console.log('app listening on port' + PORT);
 });
+=======
+  console.log('app listening on port ' + PORT);
+});
+>>>>>>> bbf4cf40b9f91f0b05d084d5d1d61b90923cbc90
