@@ -1,11 +1,171 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    </head>
-    <body>
-        <div id="app">
-            {{ message }}
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Landing Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+  <section class="section">
+    <div class="container">
+        <!-- Navbar -->
+        <div id = "appNavBar">
+            <navcomponent></navcomponent>
+         </div>
+        <!-- Company Title Header -->
+        <div id="appCompanyTitle">
+            <h1 class="title is-1">{{ company }}</h1>
         </div>
-        <script type="text/javascript" src="/static/home.js"></script>
-    </body>
+        <!-- Featured Courses: The most popular courses should be displayed here. -->
+        <div id="appFeaturedCourses">
+        <h2 class="title is-2">{{ featuredCoursesTitle }}</h2>
+        <div class="tile is-ancestor">
+            <coursecard
+                v-for="course in featuredCourses"
+                v-bind:key="course.id"
+                v-bind:img="course.img"
+                v-bind:author_img="course.author.img"
+                v-bind:author_title="course.author.title"
+                v-bind:author_name="course.author.name"
+                v-bind:description="course.description"
+            >
+            </coursecard>
+        </div>
+        </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+        <!-- Testimonials show static, chosen testimonials by users of this application. Manually selected. -->
+        <div id="appTestimonials">
+        <h1 class="title is-1">{{ testimonialsTitle }}</h1>
+        <div class="tile is-ancestor">
+            <testimonial
+                v-for="testimonial in testimonials"
+                v-bind:key="testimonial.id"
+                v-bind:quote="testimonial.quote"
+                v-bind:author="testimonial.author"
+                class="tile is-4"
+            ></testimonial>
+        </div>
+        </div>
+    </div>
+  </section>
+  <section class="section">
+      <div class="container">
+        <!-- Page Hero, mainly just briefly describes the page's objective and attempts to take you to the Courses Search Page -->
+        <div id="appHero">
+            <hero 
+                v-bind:title="heroTitle"
+                v-bind:body="heroDescription"
+                v-bind:action="heroAction"
+                class="hero is-primary" style="text-align: center;">
+            </hero>
+        </div>
+        <!-- Features Hero, which prefaces the outline to E-Schools distinct qualities. -->
+        <div id="appHero2">
+            <hero 
+                v-bind:title="heroTitle"
+                v-bind:body="heroDescription"
+                v-bind:action="heroAction"
+                class="hero" style="text-align: center;">
+            </hero>
+        </div>
+        <!-- Features Column, which is static information but we bind it so we can update it in the future if needed.-->
+        <div id="featuresApp">
+            <div class="columns is-8">
+                <div class="column">
+                    <div class="columns is-mobile">
+                        <div class="column is-narrow" style="font-size: 4em"><i class="fas fa-check-circle"></i></div>
+                        <div class="column">
+                            <h1 class="title">Coworkers</h1>
+                            <h2 class="subtitle">View and master the learning materials in the courses to advance their careers.</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="columns is-mobile">
+                        <div class="column is-narrow" style="font-size: 4em"><i class="fas fa-check-circle"></i></div>
+                        <div class="column">
+                            <h1 class="title">Instructors</h1>
+                            <h2 class="subtitle">Build an image as a mentor in this discipline.</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="columns is-mobile">
+                        <div class="column is-narrow" style="font-size: 4em"><i class="fas fa-check-circle"></i></div>
+                        <div class="column">
+                            <h1 class="title">Company</h1>
+                            <h2 class="subtitle">Nothing speaks better than a uniform culture and knowledge base. Don't miss your chance!</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+        <!-- Contact Section, main title and subtitle -->
+        <div id="appHero3">
+            <hero-no-button
+                v-bind:title="heroTitle"
+                v-bind:body="heroDescription"
+                v-bind:action="heroAction"
+                class="hero is-primary" style="text-align: center;">
+            </hero-no-button>
+        </div>
+        <!-- Contact Section, simple form -->
+        <section class="section">    
+            <div class="field">
+                <label class="label">Name</label>
+                <div class="control">
+                  <input class="input" type="text" placeholder="Text input">
+                </div>
+              </div>
+              
+              <div class="field">
+                <label class="label">Email</label>
+                <div class="control has-icons-left has-icons-right">
+                  <input class="input is-danger" type="email" placeholder="Email input" value="hello@">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                  <span class="icon is-small is-right">
+                    <i class="fas fa-exclamation-triangle"></i>
+                  </span>
+                </div>
+                <p class="help is-danger">This email is invalid</p>
+              </div>
+              
+              <div class="field">
+                <label class="label">Message</label>
+                <div class="control">
+                  <textarea class="textarea" placeholder="Textarea"></textarea>
+                </div>
+              </div>
+              
+              <div class="field">
+                <div class="control">
+                  <label class="checkbox">
+                    <input type="checkbox">
+                    I agree to the <a href="#">terms and conditions</a>
+                  </label>
+                </div>
+              </div>
+              
+              <div class="field is-grouped">
+                <div class="control">
+                  <button class="button is-link">Submit</button>
+                </div>
+              </div>
+        </section>
+    </div>
+  </section>
+  <script type="text/javascript" src="./static/home.js"></script>
+  </body>
 </html>
