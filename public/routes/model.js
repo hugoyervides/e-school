@@ -37,6 +37,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const userCollection = db.collection("users");
+const coursesCollection = db.collection("course");
 
 router.post("/users", (req, res, next)=>{
   if (req.body.name !=null && req.body.email != null) {
@@ -57,6 +58,21 @@ router.post("/users", (req, res, next)=>{
   }
 
 
+})
+
+router.post("/courses", (req, res, next)=> {
+  if (!req.body.query) {
+    res.status(208).json("Request has no value in query field.");
+  } else {
+    coursesCollection
+      .get()
+      .then(function(querySnapshot) {
+        return res.status(200).json({courses: querySnapshot})
+      })
+      .catch(function(error) {
+          res.status(500).json({message: "Error getting documents: " + error});
+      });
+  }
 })
 
 module.exports = router;

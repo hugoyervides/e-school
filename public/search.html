@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <title>Course Search</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    </head>
+    <body>
+        <div class="section">
+            <div class="container">
+                <!-- Navbar -->
+                <div id = "appNavBar">
+                    <navcomponent></navcomponent>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="container">
+                <!-- Course Search -->
+                <div id="appSearchCourses">
+                    <div class="section">
+                        <h2 class="title is-2">{{ searchTitle }}</h2>
+                        <input class="input" type="text" v-model="search">
+                    </div>
+                    <coursecard
+                        v-for="course in courses"
+                        v-bind:key="course.id"
+                        v-bind:img="course.img"
+                        v-bind:author_img="course.author.img"
+                        v-bind:author_title="course.author.title"
+                        v-bind:author_name="course.author.name"
+                        v-bind:description="course.description"
+                    >
+                    </coursecard>
+                </div>
+            </div>
+        </div>
+        <script src="./static/search.js"></script>
+    </body>
+</html>
