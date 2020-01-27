@@ -67,7 +67,15 @@ router.post("/courses", (req, res, next)=> {
     coursesCollection
       .get()
       .then(function(querySnapshot) {
-        return res.status(200).json({courses: querySnapshot})
+        var courses = []
+        querySnapshot.forEach(function(course) {
+          if (course.name) {
+            if (course.name.toLowerCase().includes(req.body.query.toLowerCase())) {
+              courses.push(course)
+            }
+          }
+        })
+        return res.status(200).json({courses: courses})
       })
       .catch(function(error) {
           res.status(500).json({message: "Error getting documents: " + error});
