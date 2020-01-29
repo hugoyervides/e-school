@@ -95,7 +95,21 @@ router.post("/course", (req, res, next)=>{
 
 router.post("/courses", (req, res, next)=> {
   if (!req.body.query) {
-    res.status(208).json("Request has no value in query field.");
+    coursesCollection
+      .get()
+      .then(function(querySnapshot) {
+        var courses = []
+        querySnapshot.forEach(function(doc) {
+          var course = doc.data();
+          if (course.name != null) {
+            courses.push(course);
+          }
+        });
+        return res.status(200).json({courses: courses})
+      })
+      .catch(function(error) {
+          res.status(500).json({message: "Error getting documents: " + error});
+      });
   } else {
     coursesCollection
       .get()

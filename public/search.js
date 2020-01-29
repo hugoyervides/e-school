@@ -40,56 +40,6 @@ Vue.component("coursecard", {
       searchTitle: "Search Courses",
       search: '',
       courses: [
-        {
-          name: "Entrepreneur 101",
-          img: "./static/img/course1.jpg",
-          author: {
-            name: "John Smith",
-            img: "./static/img/professor1.jpg",
-            title: "Entrepreneur"
-          },
-          description: "This is a sample course description." 
-        },
-        {
-          name: "Business Model",
-          img: "./static/img/course2.jpg",
-          author: {
-            name: "Dahlia Hawthorne",
-            img: "./static/img/professor2.jpg",
-            title: "Entrepreneur"
-          },
-          description: "This is a sample course description." 
-        },
-        {
-          name: "New Strategies to Sell",
-          img: "./static/img/course3.jpg",
-          author: {
-            name: "Jessye Davis",
-            img: "./static/img/professor3.jpg",
-            title: "Consultant"
-          },
-          description: "This is a sample course description." 
-        },
-        {
-          name: "Storytelling",
-          img: "./static/img/course3.jpg",
-          author: {
-            name: "Jessye Davis",
-            img: "./static/img/professor3.jpg",
-            title: "Consultant"
-          },
-          description: "This is a sample course description." 
-        },
-        {
-          name: "How to listen to your clients",
-          img: "./static/img/course3.jpg",
-          author: {
-            name: "Jessye Davis",
-            img: "./static/img/professor3.jpg",
-            title: "Consultant"
-          },
-          description: "This is a sample course description." 
-        },
       ],
       question: '',
       answer: '',
@@ -101,6 +51,33 @@ Vue.component("coursecard", {
       }
     },
     created: function () {
+      var url = "api/courses";
+      var vm = this
+      fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({
+          "query": ""
+        }),
+        headers:{
+          'Content-Type': 'application/json'
+        }})
+        .then(res => {
+          if(res.ok) {
+              return res.json();
+          }
+          throw new Error(res.statusText);
+        })
+        .then(resJSON => {
+          if (resJSON.courses.length == 0) {
+            vm.answer = "There were no course(s) that matched the criteria. Try changing your query."
+          } else {
+            vm.answer = "Found " + resJSON.courses.length + " courses matching your critera."
+          }
+          vm.courses = resJSON.courses;
+        }) 
+        .catch(err => {
+            vm.answer = err;
+        });
       // _.debounce es una función proporcionada por lodash para limitar cuan
       // a menudo se puede ejecutar una operación particularmente costosa.
       // En este caso, queremos limitar la frecuencia con la que accedemos.
