@@ -1,5 +1,5 @@
 Vue.component("coursecard", {
-    props: ['img', 'author_img', 'description', 'author_name', 'author_title'],
+    props: ['name', 'img', 'author_img', 'description', 'author_name', 'author_title'],
     template: `
               <div class="tile is-ancestor">
                 <div class="card tile">
@@ -11,10 +11,13 @@ Vue.component("coursecard", {
                         </figure>
                       </div>
                       <div class="media-content">
-                        <p class="title is-4">{{ author_name }}</p>
-                        <p class="subtitle is-6">{{ author_title }}</p>
+                        <h1 class="title">{{ name }}</h1>
                         <div class="content">
                           {{ description }}
+                        </div>
+                        <div class="content">
+                          <span> <b> {{ author_name }} </b> </span>
+                          <span>{{ author_title }}</span>
                         </div>
                         <a class="button is-primary">
                             <strong>Enroll</strong>
@@ -35,9 +38,10 @@ Vue.component("coursecard", {
     el: "#appSearchCourses",
     data: {
       searchTitle: "Search Courses",
-      search: "Search Courses...",
+      search: '',
       courses: [
         {
+          name: "Entrepreneur 101",
           img: "./static/img/course1.jpg",
           author: {
             name: "John Smith",
@@ -47,6 +51,7 @@ Vue.component("coursecard", {
           description: "This is a sample course description." 
         },
         {
+          name: "Business Model",
           img: "./static/img/course2.jpg",
           author: {
             name: "Dahlia Hawthorne",
@@ -56,6 +61,7 @@ Vue.component("coursecard", {
           description: "This is a sample course description." 
         },
         {
+          name: "New Strategies to Sell",
           img: "./static/img/course3.jpg",
           author: {
             name: "Jessye Davis",
@@ -65,6 +71,7 @@ Vue.component("coursecard", {
           description: "This is a sample course description." 
         },
         {
+          name: "Storytelling",
           img: "./static/img/course3.jpg",
           author: {
             name: "Jessye Davis",
@@ -74,6 +81,7 @@ Vue.component("coursecard", {
           description: "This is a sample course description." 
         },
         {
+          name: "How to listen to your clients",
           img: "./static/img/course3.jpg",
           author: {
             name: "Jessye Davis",
@@ -82,28 +90,58 @@ Vue.component("coursecard", {
           },
           description: "This is a sample course description." 
         },
-      ]
+      ],
+      question: '',
+      answer: '',
     },
     watch: {
       // whenever question changes, this function will run
-      search: function (newValue, oldValue) {
-        this.debouncedPerformSearch()
+      question: function (newQuestion, oldQuestion) {
+        this.debouncedGetAnswer()
       }
     },
     created: function () {
-      // _.debounce is a function provided by lodash to limit how
-      // often a particularly expensive operation can be run.
-      // In this case, we want to limit how often we access
-      // yesno.wtf/api, waiting until the user has completely
-      // finished typing before making the ajax request. To learn
-      // more about the _.debounce function (and its cousin
-      // _.throttle), visit: https://lodash.com/docs#debounce
-      this.debouncedPerformSearch = _.debounce(this.performSearch, 500)
+      // _.debounce es una función proporcionada por lodash para limitar cuan
+      // a menudo se puede ejecutar una operación particularmente costosa.
+      // En este caso, queremos limitar la frecuencia con la que accedemos.
+      // yesno.wtf/api, esperando hasta que el usuario tenga completamente
+      // Terminé de escribir antes de realizar la solicitud ajax. Aprender
+      // más sobre la función _.debounce (y su primo
+      // _.throttle), visite: https://lodash.com/docs#debounce
+      this.debouncedGetAnswer = _.debounce(this.getAnswer, 500)
     },
     methods: {
-      performSearch: function() {
-        
-      }
+      getAnswer:  function () {
+        var url = "api/courses";
+        this.body = {
+          "query": this.question
+        }
+        var vm = this
+
+        fetch(url, {
+          method: 'POST',
+          body: JSON.stringify(vm.body),
+          headers:{
+            'Content-Type': 'application/json'
+          }})
+          .then(res => {
+            if(res.ok) {
+                return res.json();
+            }
+            throw new Error(res.statusText);
+          })
+          .then(resJSON => {
+            if (resJSON.courses.length == 0) {
+              vm.answer = "There were no course(s) that matched the criteria. Try changing your query."
+            } else {
+              vm.answer = "Found " + resJSON.courses.length + " courses matching your critera."
+            }
+            vm.courses = resJSON.courses;
+          }) 
+          .catch(err => {
+              vm.answer = "There was an error processing your request. Please try again.";
+          });
+      },
     }
   })
 

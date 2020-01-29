@@ -60,6 +60,39 @@ router.post("/users", (req, res, next)=>{
 
 })
 
+/*
+{
+  name: "abc"
+  img: "./static/img/course3.jpg",
+  author: {
+    name: "Jessye Davis",
+    img: "./static/img/professor3.jpg",
+    title: "Consultant"
+  },
+  description: "This is a sample course description." 
+}
+*/
+router.post("/course", (req, res, next)=>{
+  if (req.body.name !=null && req.body.img != null && req.body.author != null && req.body.description != null) {
+    let docId = Math.floor(Math.random() * (99999 - 00000));
+    let newCourse = {
+      "name": req.body.name,
+      "img": req.body.img,
+      "author": req.body.author,
+      "description": req.body.description
+    }
+    let setNewCourse = coursesCollection.doc(String(docId)).set(newCourse);
+
+    res.json({
+      "Message": "Course successfully created"
+    })
+  }else{
+    res.json({
+      "Message": "Missing params in body."
+    })
+  }
+})
+
 router.post("/courses", (req, res, next)=> {
   if (!req.body.query) {
     res.status(208).json("Request has no value in query field.");
@@ -68,13 +101,17 @@ router.post("/courses", (req, res, next)=> {
       .get()
       .then(function(querySnapshot) {
         var courses = []
-        querySnapshot.forEach(function(course) {
-          if (course.name) {
-            if (course.name.toLowerCase().includes(req.body.query.toLowerCase())) {
-              courses.push(course)
-            }
+        var keywords = req.body.query.split(" ");
+        querySnapshot.forEach(function(doc) {
+          var course = doc.data();
+          if (course.name != null) {
+            keywords.forEach(function(word) {
+              if (course.name.toLowerCase().includes(word.toLowerCase())) {
+                courses.push(course);
+              }
+            });
           }
-        })
+        });
         return res.status(200).json({courses: courses})
       })
       .catch(function(error) {

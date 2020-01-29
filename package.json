@@ -27,6 +27,7 @@
     "bulma-start": "0.0.3",
     "express": "^4.17.1",
     "firebase-admin": "^8.9.1",
+    "lodash.debounce": "^4.0.8",
     "nodemon": "^2.0.2",
     "vue": "^2.6.11"
   }
