@@ -6,10 +6,6 @@ const app = express();
 
 const model = require("./public/routes/model")
 
-const axios = require('axios');
-const users = require("./public/routes/users")
-
-
 app.use('/static', express.static('public'));
 
 app.use(bodyParser.json());
