@@ -21,20 +21,18 @@
             </div>
             <div id='vvideo'>
                 <div class="columns">
-                    <div class="column">
-                        <videoviewer url="https://www.youtube.com/embed/tgbNymZ7vqY" title="Variables" course="C++" description="Introduction to variables in C++"></videoviewer>
-                    </div>
-                    <div class="column">
-                        <videoviewer url="https://www.youtube.com/embed/vLnPwxZdW4Y" title="Objects" course="C++" description="Introduction to C++ objects"></videoviewer>
-                    </div>
-                    <div class="column">
-                        <videoviewer url="https://www.youtube.com/embed/ZOKLjJF54Xc" title="Estructuras" course="C++" description="Estructuras en C++ basicas"></videoviewer>
-                    </div>
+                    <videoviewer 
+                        v-for = "video in videos"
+                        v-bind:resource = "video.resource"
+                        v-bind:activity_title = "video.activity_title"
+                        v-bind:type = "video.course"
+                        v-bind:description = "video.description">
+                    </videoviewer>
                 </div>
             </div>
         </div>
+        <script src="../static/videos.js"></script>
         <script type="text/javascript" src="./static/logincomponent.js"></script>
         <script type="text/javascript" src="./static/navcomponent.js"></script>
-        <script src="./static/videos.js"></script>
     </body>
 </html>

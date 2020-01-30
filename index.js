@@ -22,7 +22,7 @@ app.use("/api/", model)
 app.get('/', (req, res) => {
   return res.sendFile("home.html", {root: "public"});
 });
-app.get('/videos', (req, res) => {
+app.get('/videos/:id', (req, res) => {
   return res.sendFile("videos.html", {root: "public"})
 });
 app.get('/search', (req, res) => {

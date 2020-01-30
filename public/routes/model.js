@@ -40,6 +40,7 @@ const db = admin.firestore();
 
 const userCollection = db.collection("users");
 const coursesCollection = db.collection("course");
+const lessonsCollection = db.collection("lesson");
 
 router.post("/users", (req, res, next)=>{
   if (req.body.name !=null && req.body.email != null && req.body.password != null) {
@@ -196,6 +197,22 @@ router.get("/course/:id", (req, res, next) => {
       });
 });
 
+router.get("/videos/:id", (req, res, next) =>{
+  let id_ = +req.params.id;
+  lessonsCollection
+      .get()
+      .then(function(querySnapshot){
+        var lessons = [];
+        querySnapshot.forEach(function(doc){
+          if (doc.data().courseID == id_) {
+            lessons.push(doc.data())
+          }
+        });
+        return res.status(200).json({ lessons: lessons })
+      })
+      .catch(err => {
+        return req.status(500).json(err);
+      })
 router.get("/users/login", (req, res, next) => {
   sess = req.session;
   console.log(sess.email);
