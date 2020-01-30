@@ -3,12 +3,12 @@ const {PORT} = require('./config');
 const express = require('express')
 const bodyParser = require("body-parser")
 const app = express();
-<<<<<<< HEAD
+
 const model = require("./public/routes/model")
-=======
+
 const axios = require('axios');
 const users = require("./public/routes/users")
->>>>>>> Feature[Admin]: show users
+
 
 app.use('/static', express.static('public'));
 
@@ -35,9 +35,5 @@ app.get('/admin', (req, res) => {
 });
 
 app.listen(PORT, () => {
-<<<<<<< HEAD
-  console.log('app listening on port' + PORT);
-=======
   console.log('app listening on port ' + PORT);
->>>>>>> Feature[Admin]: show users
 });
