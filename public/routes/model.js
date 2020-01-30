@@ -184,7 +184,7 @@ router.get("/course/:id", (req, res, next) => {
       });
 });
 
-router.get("/lessons/:id", (req, res, next) =>{
+router.get("/videos/:id", (req, res, next) =>{
   let id_ = +req.params.id;
   lessonsCollection
       .get()

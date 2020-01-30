@@ -31,11 +31,24 @@ Vue.component('videoviewer',{
 new Vue({
     el: '#vvideo',
     data: {
-      videos: [
-        {resource: "https://www.youtube.com/embed/tgbNymZ7vqY" , activity_title: "Variables", type: "C++", description: "Introduction to variables in C++"},
-        {resource: "https://www.youtube.com/embed/vLnPwxZdW4Y" , activity_title: "Objects", type: "C++", description: "Introduction to C++ objects"},
-        {resource: "https://www.youtube.com/embed/ZOKLjJF54Xc" , activity_title: "Estructuras", type: "C++", description: "Estructuras en C++ basicas"},
-      ]
+      videos: []
+    },
+    created: function(){
+      var url = "../api" + window.location.pathname
+      var vm = this 
+      fetch(url)
+      .then(res => {
+        if(res.ok) {
+            return res.json();
+        }
+        throw new Error(res.statusText);
+      })
+      .then(resJSON => {
+        vm.videos = resJSON.lessons;
+      }) 
+      .catch(err => {
+          vm.answer = err;
+      });
     }
 })
 
@@ -75,7 +88,7 @@ Vue.component('navcomponent',{
       </div>
     </nav>`,
     data: function() { return {
-      logo: "./static/img/google.png",
+      logo: "../static/img/google.png",
       navbarItems: [
         {text: "Home" },
         {text: "Courses" },
