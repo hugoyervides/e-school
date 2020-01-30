@@ -28,7 +28,7 @@ var navcomponent = Vue.component('navcomponent',{
               </a>
             </div>
             <div class="buttons" v-else>
-              <a class="button is-primary">
+              <a class="button is-primary" v-on:click="showLogin()">
                 <strong>{{ signup }}</strong>
               </a>
               <a class="button is-light" v-on:click="showLogin()">

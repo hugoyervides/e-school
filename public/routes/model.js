@@ -50,15 +50,24 @@ router.post("/users", (req, res, next)=>{
         "email": req.body.email,
         "password": hash
       }
-      let setNewUser = userCollection.doc(String(docId)).set(newUser);
 
-      res.json({
-        "Message": "User successfully created"
-      })
+      userCollection.where('email', '==', req.body.email).get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            let setNewUser = userCollection.doc(String(docId)).set(newUser);
+            res.status(200).json({user: newUser});
+          } else {
+            res.statusMessage = "User already exists!";
+            res.status(500).json({message: "User already exists!"});
+          }
+        }).catch(err => {
+          res.statusMessage = err;
+          return res.status(500).json({message: err});
+        });
     });
   } else{
-      res.json({
-        "Message": "req.body params are undefined"
+      res.status(500).json({
+        message: "req.body params are undefined"
       })
     }
 })
@@ -227,8 +236,8 @@ router.post( "/users/login", ( req, res, next ) => {
   userCollection.where('email', '==', email).get()
     .then(snapshot => {
       if (snapshot.empty) {
-        console.log('No matching documents.');
-        return;
+        res.statusMessage = 'User not found.';
+        return res.status(404).json("No matching documents");
       }
 
       snapshot.forEach(doc => {
