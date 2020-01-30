@@ -6,7 +6,7 @@ Vue.component('videoviewer',{
         description: String,
     },
     template : `
-        <section class="section">
+          <section class="section">
             <div class="card">
                 <div class="card-image">
                 <figure>
@@ -25,11 +25,18 @@ Vue.component('videoviewer',{
                 </div>
                 </div>
             </div>
-        </section>
+          <section>
     `
 });
 new Vue({
-    el: '#vvideo'
+    el: '#vvideo',
+    data: {
+      videos: [
+        {url: "https://www.youtube.com/embed/tgbNymZ7vqY" , title: "Variables", course: "C++", description: "Introduction to variables in C++"},
+        {url: "https://www.youtube.com/embed/vLnPwxZdW4Y" , title: "Objects", course: "C++", description: "Introduction to C++ objects"},
+        {url: "https://www.youtube.com/embed/ZOKLjJF54Xc" , title: "Estructuras", course: "C++", description: "Estructuras en C++ basicas"},
+      ]
+    }
 })
 
 Vue.component('navcomponent',{
@@ -38,7 +45,6 @@ Vue.component('navcomponent',{
         <a class="navbar-item">
           <img v-bind:src="logo" width="auto">
         </a>
-  
         <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -80,6 +86,6 @@ Vue.component('navcomponent',{
     }
   });
   
-  var navbarApp = new Vue({
-    el: '#appNavBar'
-  });
+var navbarApp = new Vue({
+  el: '#appNavBar'
+});
