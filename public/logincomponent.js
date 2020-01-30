@@ -30,8 +30,8 @@ var logincomponent = Vue.component("logincomponent", {
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success" v-on:click="login(username, password)">Log In</button>
-        <button class="button">Register</button>
+        <button class="button is-success" v-on:click="login()">Log In</button>
+        <button class="button" v-on:click="register()">Register</button>
       </footer>
     </div>
     </div>
@@ -47,7 +47,7 @@ var logincomponent = Vue.component("logincomponent", {
       closeModal: function() {
         $(".modal").toggleClass("is-active");
       },
-      login: function(user, pass) {
+      login: function() {
         var vm = this;
         fetch("api/users/login", {
           headers:{
@@ -63,9 +63,33 @@ var logincomponent = Vue.component("logincomponent", {
             $(".modal").toggleClass("is-active");
             return res.json();
           }
-          throw new Error(res.message);
+          throw new Error(res.statusText);
         }).then(resJSON => {
           navbarApp.logIn(resJSON);
+        }).catch(err => {
+          vm.message = err;
+        })  
+      },
+      register: function() {
+        var vm = this;
+        fetch("api/users", {
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          method: "POST",
+          body: JSON.stringify({
+            name: vm.username,
+            email: vm.username,
+            password: vm.password
+          })
+        }).then(res => {
+          if (res.ok) {
+            $(".modal").toggleClass("is-active");
+            return res.json();
+          }
+          throw new Error(res.statusText);
+        }).then(resJSON => {
+          //navbarApp.logIn(resJSON);
         }).catch(err => {
           vm.message = err;
         })  
