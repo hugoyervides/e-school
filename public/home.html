@@ -7,14 +7,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body>
   <section class="section">
     <div class="container">
         <!-- Navbar -->
         <div id = "appNavBar">
-            <navcomponent></navcomponent>
-         </div>
+            <navcomponent
+              v-bind:user="user"
+            ></navcomponent>
+        </div>
+        <!-- Log In Modal -->
+        <div class="modal" id="appLogin">
+          <logincomponent>
+          </logincomponent>
+        </div>
         <!-- Company Title Header -->
         <div id="appCompanyTitle">
             <h1 class="title is-1">{{ company }}</h1>
@@ -115,7 +123,6 @@
             <hero-no-button
                 v-bind:title="heroTitle"
                 v-bind:body="heroDescription"
-                v-bind:action="heroAction"
                 class="hero is-primary" style="text-align: center;">
             </hero-no-button>
         </div>
@@ -166,6 +173,8 @@
         </section>
     </div>
   </section>
+  <script type="text/javascript" src="./static/logincomponent.js"></script>
+  <script type="text/javascript" src="./static/navcomponent.js"></script>
   <script type="text/javascript" src="./static/home.js"></script>
   </body>
 </html>
