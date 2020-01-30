@@ -213,6 +213,8 @@ router.get("/videos/:id", (req, res, next) =>{
       .catch(err => {
         return req.status(500).json(err);
       })
+})
+
 router.get("/users/login", (req, res, next) => {
   sess = req.session;
   console.log(sess.email);
