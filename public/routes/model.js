@@ -93,7 +93,11 @@ router.post("/course", (req, res, next)=>{
   }
 })
 
-router.post("/courses", (req, res, next)=> {
+function onlyUnique(value, index, self) { 
+  return self.indexOf(value) === index;
+}
+
+router.post("/courses", (req, res, next) => {
   if (!req.body.query) {
     coursesCollection
       .get()
@@ -102,6 +106,7 @@ router.post("/courses", (req, res, next)=> {
         querySnapshot.forEach(function(doc) {
           var course = doc.data();
           if (course.name != null) {
+            course.id = doc.id;
             courses.push(course);
           }
         });
@@ -121,17 +126,36 @@ router.post("/courses", (req, res, next)=> {
           if (course.name != null) {
             keywords.forEach(function(word) {
               if (course.name.toLowerCase().includes(word.toLowerCase())) {
+                course.id = doc.id;
                 courses.push(course);
               }
             });
           }
         });
-        return res.status(200).json({courses: courses})
+        return res.status(200).json({courses: courses.filter(onlyUnique)})
       })
       .catch(function(error) {
           res.status(500).json({message: "Error getting documents: " + error});
       });
   }
 })
+
+router.get("/course/:id", (req, res, next) => {
+  let id_ = +req.params.id;
+  coursesCollection
+      .get()
+      .then(function(querySnapshot) {
+        var course = {};
+        querySnapshot.forEach(function(doc) {
+          if (doc.id ==  id_) {
+            course = doc.data()
+          }
+        });
+        return res.status(200).json({course: course});
+      })
+      .catch(err => {
+        return res.status(500).json(err);
+      });
+});
 
 module.exports = router;

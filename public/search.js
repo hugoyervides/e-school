@@ -1,5 +1,5 @@
 Vue.component("coursecard", {
-    props: ['name', 'img', 'author_img', 'description', 'author_name', 'author_title'],
+    props: ['name', 'img', 'author_img', 'description', 'author_name', 'author_title', 'id_'],
     template: `
               <div class="tile is-ancestor">
                 <div class="card tile">
@@ -19,7 +19,7 @@ Vue.component("coursecard", {
                           <span> <b> {{ author_name }} </b> </span>
                           <span>{{ author_title }}</span>
                         </div>
-                        <a class="button is-primary">
+                        <a class="button is-primary" v-on:click="goto(id_)">
                             <strong>Enroll</strong>
                         </a>
                       </div>
@@ -31,7 +31,12 @@ Vue.component("coursecard", {
                       </figure>
                   </div>
                 </div>
-              </div>`
+              </div>`,
+      methods: {
+        goto: function(id_) {
+          window.location.href = "course/" + id_;
+        }
+      }
   })
 
   var searchCoursesApp = new Vue({
@@ -88,6 +93,9 @@ Vue.component("coursecard", {
       this.debouncedGetAnswer = _.debounce(this.getAnswer, 500)
     },
     methods: {
+      goto: function(id_) {
+        window.location.href = "course/" + id_;
+      },
       getAnswer:  function () {
         var url = "api/courses";
         this.body = {

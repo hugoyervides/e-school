@@ -20,6 +20,9 @@ app.get('/videos', (req, res) => {
 app.get('/search', (req, res) => {
   return res.sendFile("search.html", {root: "public"})
 });
+app.get('/course/:id', (req, res) => {
+  return res.sendFile("course.html", {root: "public"})
+});
 
 app.listen(PORT, () => {
   console.log('app listening on port' + PORT);
