@@ -96,7 +96,7 @@ router.get("/admin/users", (req, res, next)=>{
   description: "This is a sample course description."
 }
 */
-router.post("/course", (req, res, next)=>{
+router.post("/course", (req, res, next) => {
   if (req.body.name !=null && req.body.img != null && req.body.author != null && req.body.description != null && req.body.reviews != null) {
     let docId = Math.floor(Math.random() * (99999 - 00000));
     let newCourse = {
