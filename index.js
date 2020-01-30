@@ -4,14 +4,20 @@ const express = require('express')
 const bodyParser = require("body-parser")
 const app = express();
 
-const model = require("./public/routes/model")
+const model = require("./public/routes/model");
 
 app.use('/static', express.static('public'));
 
 app.use(bodyParser.json());
 
+const session = require('express-session');
+app.use(session({
+  secret: 'my-secret',
+  resave: false,
+  saveUninitialized: true,
+  maxAge: 1000 * 60
+}));
 app.use("/api/", model)
-
 
 app.get('/', (req, res) => {
   return res.sendFile("home.html", {root: "public"});
