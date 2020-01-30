@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div id="appNavBar">
+            <navcomponentlogged></navcomponentlogged>
+        </div>
+        <div id="appCompanyTitle" style="margin: 2%;">
+            <h1 class="title is-1">{{ company }}</h1>
+        </div>
+    </div>
+   
+    <div class="container">
+        <div id="course"></div>
+        <course></course>
+    </div>
+
+   <div class="container" style="margin-top: 20px;">
+       <h1 class="title is-2">Activities</h1>
+   </div>
+
+<div class="container">
+    <div id="activity">
+      <activity
+      v-for="c in courses"
+      v-bind:key="c.id"
+    v-bind:activity_title="c.activity_title"
+    v-bind:author_name="c.author_name"
+    v-bind:description="c.description"
+    v-bind:due="c.due"
+      ></activity>
+    </div>
+</div>
+  
+    <script type="text/javascript" src="/static/course-enrolled.js"></script>
+</body>
+</html>

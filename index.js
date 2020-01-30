@@ -30,6 +30,11 @@ app.get('/admin', (req, res) => {
   return res.sendFile("admin.html", {root:"public"});
 });
 
-app.listen(PORT, () => {
-  console.log('app listening on port ' + PORT);
+app.get('/course-enrolled', (req, res) => {
+  return res.sendFile("course-enrolled.html", {root: "public"});
 });
+
+app.listen(PORT, () => {
+  console.log('app listening on port' + PORT);
+});
+
