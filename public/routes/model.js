@@ -15,7 +15,7 @@ const {FIREBASE_TYPE,
 
 const admin = require("firebase-admin");
 
-const serviceAccount = 
+const serviceAccount =
 {
   "type": FIREBASE_TYPE,
   "project_id": FIREBASE_PROJECT_ID,
@@ -57,7 +57,31 @@ router.post("/users", (req, res, next)=>{
     })
   }
 
+})
 
+router.get("/admin/users", (req, res, next)=>{
+  let usersRef = db.collection('users');
+  let query = usersRef.where('admin_id', '==', 'obedgm@gmail.com').get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        console.log('No matching documents.');
+        return;
+      }
+
+      var docs = []
+      snapshot.forEach(doc => {
+        const data = {
+          'email': doc.data().email,
+          'name': doc.data().name
+        }
+        docs.push(data)
+      });
+
+      res.send(docs);
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    })
 })
 
 /*
@@ -69,7 +93,7 @@ router.post("/users", (req, res, next)=>{
     img: "./static/img/professor3.jpg",
     title: "Consultant"
   },
-  description: "This is a sample course description." 
+  description: "This is a sample course description."
 }
 */
 router.post("/course", (req, res, next)=>{
@@ -94,7 +118,7 @@ router.post("/course", (req, res, next)=>{
   }
 })
 
-function onlyUnique(value, index, self) { 
+function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 

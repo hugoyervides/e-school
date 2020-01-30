@@ -18,7 +18,6 @@ Vue.component('navcomponent',{
         <span aria-hidden="true"></span>
       </a>
     </div>
-    
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start">
         <a v-for="item in navbarItems" class="navbar-item" v-on:click="goto(item.goto)">
@@ -106,7 +105,7 @@ var appFeaturedCourses = new Vue({
           img: "./static/img/professor1.jpg",
           title: "Entrepreneur"
         },
-        description: "This is a sample course description." 
+        description: "This is a sample course description."
       },
       {
         img: "./static/img/course2.jpg",
@@ -115,7 +114,7 @@ var appFeaturedCourses = new Vue({
           img: "./static/img/professor2.jpg",
           title: "Entrepreneur"
         },
-        description: "This is a sample course description." 
+        description: "This is a sample course description."
       },
       {
         img: "./static/img/course3.jpg",
@@ -124,7 +123,7 @@ var appFeaturedCourses = new Vue({
           img: "./static/img/professor3.jpg",
           title: "Consultant"
         },
-        description: "This is a sample course description." 
+        description: "This is a sample course description."
       },
     ]
   }
