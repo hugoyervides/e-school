@@ -73,13 +73,14 @@ router.post("/users", (req, res, next)=>{
 }
 */
 router.post("/course", (req, res, next)=>{
-  if (req.body.name !=null && req.body.img != null && req.body.author != null && req.body.description != null) {
+  if (req.body.name !=null && req.body.img != null && req.body.author != null && req.body.description != null && req.body.reviews != null) {
     let docId = Math.floor(Math.random() * (99999 - 00000));
     let newCourse = {
       "name": req.body.name,
       "img": req.body.img,
       "author": req.body.author,
-      "description": req.body.description
+      "description": req.body.description,
+      "reviews": req.body.reviews
     }
     let setNewCourse = coursesCollection.doc(String(docId)).set(newCourse);
 

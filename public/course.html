@@ -48,6 +48,18 @@
                             </relatedcourse>
                         </div>
                     </div>
+                    <div class="section">
+                        <div class="title tile">{{ reviewsTitle }}</div>
+                        <div class="tile is-ancestor is-vertical">
+                            <coursereview
+                                v-for="review in course.reviews"
+                                v-bind:user="review.user"
+                                v-bind:comment="review.comment"
+                                v-bind:rating="review.rating"
+                            ></coursereview>
+                            </coursereview>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

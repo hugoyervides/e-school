@@ -91,12 +91,24 @@ Vue.component('navcomponent',{
               </div>`
   })
 
+  Vue.component("coursereview", {
+    props: ["user", "comment", "rating"],
+    template: `
+    <div class="card tile">
+      {{ user }}
+      {{ comment }}
+      {{ rating }}
+    </div>
+    `
+  });
+
   var courseApp = new Vue({
       el: "#appCourse",
       data: {
           answer: "",
           relatedCourses: [],
           relatedCoursesTitle: "Related Courses",
+          reviewsTitle: "Reviews",
           course: {
               id: 1,
               name: "abc",
