@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Course Search</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    </head>
+    <body>
+        <div class="section">
+            <div class="container">
+                <!-- Navbar -->
+                <div id = "appNavBar">
+                    <navcomponent></navcomponent>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="container">
+                <!-- Course Search -->
+                <div id="appSearchCourses">
+                    <h2 class="title is-2">{{ searchTitle }}</h2>
+                    <div class="section">
+                        <input class="input" type="text" v-model="question">
+                        {{ answer }}
+                    </div>
+                    <coursecard
+                        v-for="course in courses"
+                        v-bind:key="course.id"
+                        v-bind:id_="course.id"
+                        v-bind:name="course.name"
+                        v-bind:img="course.img"
+                        v-bind:author_img="course.author.img"
+                        v-bind:author_title="course.author.title"
+                        v-bind:author_name="course.author.name"
+                        v-bind:description="course.description"
+                    >
+                    </coursecard>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+        <script type="text/javascript" src="./static/search.js"></script>
+    </body>
+</html>
