@@ -12,6 +12,10 @@ app.use(bodyParser.json());
 app.use("/api/", users)
 
 app.get('/', (req, res) => {
+  return res.sendFile("home.html", {root: "public"});
+});
+
+app.get('/course-enrolled', (req, res) => {
   return res.sendFile("course.html", {root: "public"});
 });
 
