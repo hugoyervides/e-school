@@ -191,7 +191,7 @@ router.get("/lessons/:id", (req, res, next) =>{
       .then(function(querySnapshot){
         var lessons = [];
         querySnapshot.forEach(function(doc){
-          if (true) {
+          if (doc.data().courseID == id_) {
             lessons.push(doc.data())
           }
         });

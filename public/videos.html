@@ -15,9 +15,9 @@
                 <div class="columns">
                     <videoviewer 
                         v-for = "video in videos"
-                        v-bind:url = "video.url"
-                        v-bind:title = "video.title"
-                        v-bind:course = "video.course"
+                        v-bind:resource = "video.resource"
+                        v-bind:activity_title = "video.activity_title"
+                        v-bind:type = "video.course"
                         v-bind:description = "video.description">
                     </videoviewer>
                 </div>

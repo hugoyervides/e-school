@@ -1,8 +1,8 @@
 Vue.component('videoviewer',{
     props: {
-        url: String,
-        title: String,
-        course: String,
+        resource: String,
+        activity_title: String,
+        type: String,
         description: String,
     },
     template : `
@@ -10,14 +10,14 @@ Vue.component('videoviewer',{
             <div class="card">
                 <div class="card-image">
                 <figure>
-                    <iframe width="440" height="255" v-bind:src="url" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    <iframe width="440" height="255" v-bind:src="resource" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                 </figure>
                 </div>
                 <div class="card-content">
                 <div class="media">
                     <div class="media-content">
-                    <p class="title is-4">{{ title }}</p>
-                    <p class="subtitle is-6">{{ course }}</p>
+                    <p class="title is-4">{{ activity_title }}</p>
+                    <p class="subtitle is-6">{{ type }}</p>
                     </div>
                 </div>
                 <div class="content">
@@ -32,9 +32,9 @@ new Vue({
     el: '#vvideo',
     data: {
       videos: [
-        {url: "https://www.youtube.com/embed/tgbNymZ7vqY" , title: "Variables", course: "C++", description: "Introduction to variables in C++"},
-        {url: "https://www.youtube.com/embed/vLnPwxZdW4Y" , title: "Objects", course: "C++", description: "Introduction to C++ objects"},
-        {url: "https://www.youtube.com/embed/ZOKLjJF54Xc" , title: "Estructuras", course: "C++", description: "Estructuras en C++ basicas"},
+        {resource: "https://www.youtube.com/embed/tgbNymZ7vqY" , activity_title: "Variables", type: "C++", description: "Introduction to variables in C++"},
+        {resource: "https://www.youtube.com/embed/vLnPwxZdW4Y" , activity_title: "Objects", type: "C++", description: "Introduction to C++ objects"},
+        {resource: "https://www.youtube.com/embed/ZOKLjJF54Xc" , activity_title: "Estructuras", type: "C++", description: "Estructuras en C++ basicas"},
       ]
     }
 })
