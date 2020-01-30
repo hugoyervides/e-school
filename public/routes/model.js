@@ -12,6 +12,8 @@ const {FIREBASE_TYPE,
        FIREBASE_AUTH_PROVIDER,
        FIREBASE_CLIENT_CERT_URL} = require('../../config');
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const admin = require("firebase-admin");
 
@@ -40,23 +42,25 @@ const userCollection = db.collection("users");
 const coursesCollection = db.collection("course");
 
 router.post("/users", (req, res, next)=>{
-  if (req.body.name !=null && req.body.email != null) {
-    let docId = Math.floor(Math.random() * (99999 - 00000));
-    let newUser = {
-      "name": req.body.name,
-      "email": req.body.email
+  if (req.body.name !=null && req.body.email != null && req.body.password != null) {
+    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+      let docId = Math.floor(Math.random() * (99999 - 00000));
+      let newUser = {
+        "name": req.body.name,
+        "email": req.body.email,
+        "password": hash
+      }
+      let setNewUser = userCollection.doc(String(docId)).set(newUser);
+
+      res.json({
+        "Message": "User successfully created"
+      })
+    });
+  } else{
+      res.json({
+        "Message": "req.body params are undefined"
+      })
     }
-    let setNewUser = userCollection.doc(String(docId)).set(newUser);
-
-    res.json({
-      "Message": "User successfully created"
-    })
-  }else{
-    res.json({
-      "Message": "req.body params are undefined"
-    })
-  }
-
 })
 
 router.get("/admin/users", (req, res, next)=>{
@@ -96,7 +100,7 @@ router.get("/admin/users", (req, res, next)=>{
   description: "This is a sample course description."
 }
 */
-router.post("/course", (req, res, next)=>{
+router.post("/course", (req, res, next) => {
   if (req.body.name !=null && req.body.img != null && req.body.author != null && req.body.description != null && req.body.reviews != null) {
     let docId = Math.floor(Math.random() * (99999 - 00000));
     let newCourse = {
@@ -181,6 +185,76 @@ router.get("/course/:id", (req, res, next) => {
       .catch(err => {
         return res.status(500).json(err);
       });
+});
+
+router.get("/users/login", (req, res, next) => {
+  sess = req.session;
+  console.log(sess.email);
+  if (!sess.email) {
+    return res.status(200).json({user: {}});
+  }
+  userCollection.where('email', '==', sess.email).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        console.log('No matching documents.');
+        return res.status(200).json({user: {}});
+      }
+
+      var user = {}
+      snapshot.forEach(doc => {
+        if (doc.id == sess.user_id) {
+          user = doc.data();
+        }
+      });
+      return res.status(200).json({user: user});
+    }).catch(err => {
+      console.error(err);
+      res.status(500).json({message: err});
+    })
+});
+
+router.post( "/users/login", ( req, res, next ) => {
+	let email = req.body.email;
+
+	if ( !email ){
+		res.statusMessage = "Missing 'email' field in params!";
+		return res.status( 406 ).json({
+			message : "Missing 'email' field in params!",
+			status : 406
+		});
+  }
+  
+  userCollection.where('email', '==', email).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        console.log('No matching documents.');
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        var user = doc.data();
+        bcrypt.compare(req.body.password, user.password, function(err, compRes) {
+          if (compRes) {
+            sess = req.session;
+            sess.email = email;
+            sess.user_id = doc.id;
+            user.password = "";
+  
+            return res.status(200).json( user );
+          } else {
+            return res.status(401).json("Incorrect password.");
+          }
+        });
+      });
+    }).catch(err => {
+      return res.status(500).json({message: err});
+    })
+});
+
+router.post("/users/logout", (req, res, next) => {
+	req.session.destroy();
+
+	return res.status(200).json("Successful log out.");
 });
 
 module.exports = router;
