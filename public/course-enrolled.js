@@ -94,33 +94,35 @@ Vue.component('activity', {
           <a href="#" class="card-footer-item">Entregar Tarea</a>
       </footer>
   </div>
-</div>`,
-data(){
-  return {lessons:[]}
-},
-
-methods:{
-  getCourses(){
-    axios
-    .get('/api/course/lesson',{
-      dataType: 'json',
-        headers: {
-          'Accept': 'application/json'
-        }
-    }).then(response => (this.lessons = response.data))
-    console.log(this.lessons)
-  }
-
-},
-mounted() {
-  this.getCourses();
-  console.log(this.courses)
-}
-
+</div>`
 });
 
 
-
+var courseApp = new Vue({
+    el: "#activity",
+    data: {
+        lessons:[]
+    },
+    created: function(){
+        var url = "../api" + window.location.pathname
+        var vm = this 
+        fetch(url)
+        .then(res => {
+          if(res.ok) {
+              return res.json();
+          }
+          throw new Error(res.statusText);
+        })
+        .then(resJSON => {
+          vm.videos = resJSON.lessons;
+        }) 
+        .catch(err => {
+            vm.answer = err;
+        });
+      }
+    
+  
+  });
 
 
 
@@ -153,7 +155,3 @@ var courseApp = new Vue({
   el: "course"
 });
 
-var courseApp = new Vue({
-  el: "#activity"
-
-});

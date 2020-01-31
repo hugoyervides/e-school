@@ -13,6 +13,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const userCollection = db.collection("users");
+const lessonsCollection = db.collection("lesson");
 
 router.post("/users", (req, res, next)=>{
   if (req.body.name !=null && req.body.email != null) {
@@ -34,5 +35,82 @@ router.post("/users", (req, res, next)=>{
 
 
 })
+
+
+router.get("/admin/users", (req, res, next)=>{
+  let usersRef = db.collection('users');
+  let query = usersRef.where('admin_id', '==', 'obedgm@gmail.com').get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        console.log('No matching documents.');
+        return;
+      }
+
+      var docs = []
+      snapshot.forEach(doc => {
+        const data = {
+          'email': doc.data().email,
+          'name': doc.data().name
+        }
+        docs.push(data)
+      });
+
+      res.send(docs);
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    })
+})
+
+// router.get("/course/lesson", (req, res, next)=>{
+//   let lessonRef = lessonCollection;
+
+//   let query = lessonRef.where('courseID', '==', '56216').get()
+//     .then(snapshot => {
+//       if (snapshot.empty) {
+//         console.log('No matching documents.');
+//         return;
+//       }
+
+//       var docs = []
+//       snapshot.forEach(doc => {
+//         const data = {
+//           'author': doc.data().author,
+//           'activity_title': doc.data().activity_title,
+//           'description': doc.data().description,
+//           'resource': doc.data().resource,
+//           'due': doc.data().due
+          
+//         }
+//         docs.push(data)
+//       });
+
+//       res.send(docs);
+//     })
+//     .catch(err => {
+//       console.log('Error getting documents', err);
+//     })
+// })
+
+router.get("/lessons/:id", (req, res, next) =>{
+  let id_ = +req.params.id;
+  lessonsCollection
+      .get()
+      .then(function(querySnapshot){
+        var lessons = [];
+        querySnapshot.forEach(function(doc){
+          if (doc.data().courseID == id_) {
+            lessons.push(doc.data())
+          }
+        });
+        return res.status(200).json({ lessons: lessons })
+      })
+      .catch(err => {
+        return req.status(500).json(err);
+      })
+})
+
+
+
 
 module.exports = router;

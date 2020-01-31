@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use("/api/", users)
 
 app.get('/', (req, res) => {
-  return res.sendFile("course.html", {root: "public"});
+  return res.sendFile("course-enrolled.html", {root: "public"});
 });
 
 app.listen(PORT, () => {
