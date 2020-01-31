@@ -1,19 +1,69 @@
 <html>
-
-<head>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-</head>
-
-<body>
-    <div class="container">
-        <div id="appNavBar">
-            <navcomponentlogged></navcomponentlogged>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Course Search</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    </head>
+    <body>
+        <!-- Navbar -->
+        <div class="section">
+            <div class="container">
+                <!-- Navbar -->
+                <div id = "appNavBar">
+                    <navcomponent></navcomponent>
+                </div>
+            </div>
         </div>
-        <div id="appCompanyTitle" style="margin: 2%;">
-            <h1 class="title is-1">{{ company }}</h1>
+        <!-- Course Hero -->
+        <div class="section">
+            <div class="container">
+                <div id="appCourse">
+                    <div class="section">
+                        <coursecard
+                            v-bind:key="course.id"
+                            v-bind:name="course.name"
+                            v-bind:img="course.img"
+                            v-bind:author_img="course.author.img"
+                            v-bind:author_title="course.author.title"
+                            v-bind:author_name="course.author.name"
+                            v-bind:description="course.description"
+                        >
+                        </coursecard>
+                    </div>
+                    <div class="section">
+                        <div class="title tile">{{ relatedCoursesTitle }}</div>
+                        <div class="tile is-ancestor">
+                            <relatedcourse
+                                v-for="course in relatedCourses"
+                                v-bind:key="course.id"
+                                v-bind:name="course.name"
+                                v-bind:img="course.img"
+                                v-bind:author_img="course.author.img"
+                                v-bind:author_title="course.author.title"
+                                v-bind:author_name="course.author.name"
+                                v-bind:description="course.description">
+                            </relatedcourse>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="title tile">{{ reviewsTitle }}</div>
+                        <div class="tile is-ancestor is-vertical">
+                            <coursereview
+                                v-for="review in course.reviews"
+                                v-bind:user="review.user"
+                                v-bind:comment="review.comment"
+                                v-bind:rating="review.rating"
+                            ></coursereview>
+                            </coursereview>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+<<<<<<< HEAD
     </div>
    
     <div class="container">
@@ -41,4 +91,8 @@
   
     <script type="text/javascript" src="/static/course.js"></script>
 </body>
+=======
+        <script type="text/javascript" src="../static/course.js"></script>
+    </body>
+>>>>>>> 5ae20fb34f1baca380ab6749eff9e423b0e4c22e
 </html>

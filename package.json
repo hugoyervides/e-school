@@ -22,11 +22,14 @@
   },
   "homepage": "https://github.com/hugoyervides/e-school#readme",
   "dependencies": {
-    "bulma": "^0.8.0",
-    "bulma-start": "0.0.3",
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
+    "bulma": "^0.8.0",
+    "bulma-carousel": "^4.0.4",
+    "bulma-start": "0.0.3",
     "express": "^4.17.1",
     "firebase-admin": "^8.9.1",
+    "lodash.debounce": "^4.0.8",
     "nodemon": "^2.0.2",
     "requirejs": "^2.3.6",
     "vue": "^2.6.11"
