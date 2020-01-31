@@ -41,6 +41,7 @@ const db = admin.firestore();
 const userCollection = db.collection("users");
 const coursesCollection = db.collection("course");
 const lessonsCollection = db.collection("lesson");
+const messageCollection = db.collection("messages");
 
 router.post("/users", (req, res, next)=>{
   if (req.body.name !=null && req.body.email != null && req.body.password != null) {
@@ -71,6 +72,22 @@ router.post("/users", (req, res, next)=>{
         message: "req.body params are undefined"
       })
     }
+})
+
+router.post("/messages", (req, res, next) => {
+  if (req.body.email && req.body.name && req.body.message) {
+    var newMessage = {
+      email: req.body.email,
+      name: req.body.name,
+      message: req.body.message
+    };
+    let docId = Math.floor(Math.random() * (99999 - 00000));
+    messageCollection.doc(String(docId)).set(newMessage);
+    return res.status(200).json({message: "Message sent!"});   
+  } else {
+    res.statusMessage = "Missing fields in message!"
+    return res.status(408).json({message: "Missing params in request!"});
+  }
 })
 
 router.get("/admin/users", (req, res, next)=>{

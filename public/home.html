@@ -129,47 +129,49 @@
             </hero-no-button>
         </div>
         <!-- Contact Section, simple form -->
-        <section class="section">
+        <section class="section" id="appForm">
             <div class="field">
                 <label class="label">Name</label>
                 <div class="control">
-                  <input class="input" type="text" placeholder="Text input">
+                  <input class="input" type="text" placeholder="Text input" v-model="name">
                 </div>
               </div>
 
               <div class="field">
                 <label class="label">Email</label>
                 <div class="control has-icons-left has-icons-right">
-                  <input class="input is-danger" type="email" placeholder="Email input">
+                  <input class="input" type="email" placeholder="Email input" v-model="email">
                   <span class="icon is-small is-left">
                     <i class="fas fa-envelope"></i>
                   </span>
-                  <span class="icon is-small is-right">
+                  <!--<span class="icon is-small is-right">
                     <i class="fas fa-exclamation-triangle"></i>
-                  </span>
+                  </span>-->
                 </div>
-                <p class="help is-danger">This email is invalid</p>
               </div>
 
               <div class="field">
                 <label class="label">Message</label>
                 <div class="control">
-                  <textarea class="textarea" placeholder="Textarea"></textarea>
+                  <textarea class="textarea" placeholder="Textarea" v-model="message"></textarea>
                 </div>
               </div>
 
               <div class="field">
                 <div class="control">
                   <label class="checkbox">
-                    <input type="checkbox">
+                    <input type="checkbox" v-model="terms">
                     I agree to the <a href="#">terms and conditions</a>
                   </label>
                 </div>
               </div>
 
+              
               <div class="field is-grouped">
                 <div class="control">
-                  <button class="button is-link">Submit</button>
+                  <p class="help is-primary">{{ successMessage }}</p>
+                  <p class="help is-danger">{{ errorMessage }}</p>
+                  <button class="button is-link" v-on:click="submitMessage()">Submit</button>
                 </div>
               </div>
         </section>
