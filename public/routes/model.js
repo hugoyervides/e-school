@@ -215,6 +215,24 @@ router.get("/videos/:id", (req, res, next) =>{
       })
 })
 
+router.get("/course-enrolled/:id", (req, res, next) =>{
+  let id_ = +req.params.id;
+  lessonsCollection
+      .get()
+      .then(function(querySnapshot){
+        var courses = [];
+        querySnapshot.forEach(function(doc){
+          if (doc.data().courseID == id_) {
+            courses.push(doc.data())
+          }
+        });
+        return res.status(200).json({ courses: courses })
+      })
+      .catch(err => {
+        return req.status(500).json(err);
+      })
+})
+
 router.get("/users/login", (req, res, next) => {
   sess = req.session;
   console.log(sess.email);

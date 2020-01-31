@@ -17,8 +17,8 @@
     </div>
    
     <div class="container">
-        <div id="course"></div>
-        <course></course>
+        <div id="activity"></div>
+        <activiy></activiy>
     </div>
 
    <div class="container" style="margin-top: 20px;">
@@ -27,14 +27,14 @@
 
 <div class="container">
     <div id="activity">
-      <activity
-    v-for="c in lessons"
-    v-bind:key="c.id"
-    v-bind:activity_title="c.activity_title"
-    v-bind:author_name="c.author"
-    v-bind:description="c.description"
-    v-bind:due="c.due"
-      ></activity>
+       <activity
+       v-for = "a in activities "
+       v-bind:resource = "a.resource"
+       v-bind:activity_title = "a.activity_title"
+       v-bind:author = "a.author"
+       v-bind:description = "a.description"
+       v-bind:due = "a.due"></activity>
+       
     </div>
 </div>
   

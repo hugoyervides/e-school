@@ -36,7 +36,7 @@ app.get('/admin', (req, res) => {
   return res.sendFile("admin.html", {root:"public"});
 });
 
-app.get('/course-enrolled', (req, res) => {
+app.get('/course-enrolled/:id', (req, res) => {
   return res.sendFile("course-enrolled.html", {root: "public"});
 });
 

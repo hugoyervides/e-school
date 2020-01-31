@@ -72,21 +72,27 @@ var navbarApp = new Vue({
 
 
 Vue.component('activity', {
-  props: [ 'author', 'activity_title', 'description','resource', 'due'],
+  props: {
+    author: String,
+    resource: String,
+    activity_title: String,
+    due: String,
+    description: String,
+},
   template: ` <div id="list"  class="container" style="margin-top:30px;">
   <div class="card">
       <header class="card-header">
           <p class="card-header-title">
-              {{c.activity_title}}
+              {{activity_title}}
               </p>
       </header>
       <div class="card-content">
           <div class="content">
              <p> {{author}} </p>
-             <p> {{c.description}} </p>
+             <p> {{description}}  </p>
              <a href="{{resource}}">Liga Externa</a>        
                    <br>
-              <p> Due date:{{due}} </p>
+              <p> Due date: {{due}} </p>
           </div>
       </div>
       <footer class="card-footer">
@@ -101,7 +107,7 @@ Vue.component('activity', {
 var courseApp = new Vue({
     el: "#activity",
     data: {
-        lessons:[]
+        todos:[ ]
     },
     created: function(){
         var url = "../api" + window.location.pathname
@@ -114,10 +120,12 @@ var courseApp = new Vue({
           throw new Error(res.statusText);
         })
         .then(resJSON => {
-          vm.videos = resJSON.lessons;
+            vm.todos = resJSON.courses;
+            console.log(vm.todos);
+
         }) 
         .catch(err => {
-            vm.answer = err;
+            vm.todos = err;
         });
       }
     
@@ -151,7 +159,5 @@ videos: {vistos:1, disponibles:2}
 
 })
 
-var courseApp = new Vue({
-  el: "course"
-});
+
 
