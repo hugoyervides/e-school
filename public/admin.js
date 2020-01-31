@@ -97,12 +97,10 @@ Vue.component('ComponentB',{
         }
       })
       .then(response => (this.users = response.data))
-      console.log(this.users)
     }
   },
   mounted() {
     this.getUsers();
-    console.log(this.users)
   }
 })
 
