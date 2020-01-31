@@ -11,6 +11,7 @@ Vue.component('navcomponent',{
           <span aria-hidden="true"></span>
         </a>
 <<<<<<< HEAD
+<<<<<<< HEAD
         
         <div class="navbar-dropdown">
           <a class="navbar-item">
@@ -29,12 +30,17 @@ Vue.component('navcomponent',{
           <a class="navbar-item">
             Log Out
 =======
+=======
+>>>>>>> 5ae20fb34f1baca380ab6749eff9e423b0e4c22e
       </div>
       
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
           <a v-for="item in navbarItems" class="navbar-item" v-on:click="goto(item.goto)">
             {{ item.text }}
+<<<<<<< HEAD
+>>>>>>> 5ae20fb34f1baca380ab6749eff9e423b0e4c22e
+=======
 >>>>>>> 5ae20fb34f1baca380ab6749eff9e423b0e4c22e
           </a>
           </div>
@@ -53,6 +59,7 @@ Vue.component('navcomponent',{
           </div>
         </div>
       </div>
+<<<<<<< HEAD
 <<<<<<< HEAD
     </div>
   </nav>`,
@@ -176,6 +183,24 @@ var courseApp = new Vue({
         window.location.href = path
       }
     }
+=======
+    </nav>`,
+    data: function() { return {
+      logo: "../static/img/google.png",
+      navbarItems: [
+        {text: "Home", goto: "/" },
+        {text: "Courses", goto: "/search" },
+      ],
+      signup: "Sign Up",
+      login: "Log In"
+      }
+    },
+    methods: {
+      goto: function(path) {
+        window.location.href = path
+      }
+    }
+>>>>>>> 5ae20fb34f1baca380ab6749eff9e423b0e4c22e
   });
   
   var navbarApp = new Vue({
@@ -314,5 +339,9 @@ var courseApp = new Vue({
                     </div>
                   </div>
                 </div>`
+<<<<<<< HEAD
+  })
+>>>>>>> 5ae20fb34f1baca380ab6749eff9e423b0e4c22e
+=======
   })
 >>>>>>> 5ae20fb34f1baca380ab6749eff9e423b0e4c22e
