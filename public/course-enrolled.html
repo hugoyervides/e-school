@@ -28,10 +28,10 @@
 <div class="container">
     <div id="activity">
       <activity
-      v-for="c in courses"
-      v-bind:key="c.id"
+    v-for="c in lessons"
+    v-bind:key="c.id"
     v-bind:activity_title="c.activity_title"
-    v-bind:author_name="c.author_name"
+    v-bind:author_name="c.author"
     v-bind:description="c.description"
     v-bind:due="c.due"
       ></activity>
