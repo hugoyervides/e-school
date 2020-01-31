@@ -34,7 +34,9 @@
             <coursecard
                 v-for="course in featuredCourses"
                 v-bind:key="course.id"
+                v-bind:id_="course.id"
                 v-bind:img="course.img"
+                v-bind:title="course.name"
                 v-bind:author_img="course.author.img"
                 v-bind:author_title="course.author.title"
                 v-bind:author_name="course.author.name"
