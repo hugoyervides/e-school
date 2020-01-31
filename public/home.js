@@ -175,3 +175,57 @@ var heroApp3 = new Vue({
     heroTitle: `Contact Us`
   }
 })
+
+var formApp = new Vue({
+  el: "#appForm",
+  data: {
+    name: "",
+    email: "",
+    message: "",
+    errorMessage: "",
+    successMessage: "",
+    terms: false
+  },
+  methods: {
+    submitMessage: function() {
+      if (!this.terms) {
+        this.errorMessage = "Check the Terms and Conditions.";
+        return;
+      }
+      this.errorMessage = "";
+      if (this.name == "") {
+        this.errorMessage += "Please input a name.\n";
+        return;
+      }
+      if (this.email == "") {
+        this.errorMessage += "Please input an email.\n";
+        return;
+      }
+      if (this.message == "") {
+        this.errorMessage += "Please input a message.\n";
+        return;
+      }
+      var vm = this;
+      fetch("./api/messages", {
+        method: "POST",
+        body: JSON.stringify({
+          name: vm.name,
+          email : vm.email,
+          message: vm.message
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }}).then(res => {
+          if (res.ok) {
+            return res.json();
+          }
+          throw new Error(res.statusText);
+        }).then(resJSON => {
+          vm.successMessage = "Message sent!";
+        })
+        .catch(err => {
+          vm.errorMessage = err;
+        })
+    }
+  }
+})
