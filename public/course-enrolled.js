@@ -32,7 +32,6 @@ Vue.component('navcomponentlogged',{
           {{name}}
         </a>
         
-
         <div class="navbar-dropdown">
           <a class="navbar-item">
             Account
@@ -56,7 +55,7 @@ Vue.component('navcomponentlogged',{
     </div>
   </nav>`,
   data: function() { return {
-    logo: "./static/google.png",
+    logo: "./static/img/google.png",
     navbarItems: [
       {text: "Home" },
       {text: "My Courses" },
@@ -73,21 +72,21 @@ var navbarApp = new Vue({
 
 
 Vue.component('activity', {
-  props: [ 'description', 'author_name', 'activity_title', 'due'],
-  template: `  <div id="list" class="container" style="margin-top:30px;">
+  props: [ 'author', 'activity_title', 'description','resource', 'due'],
+  template: ` <div id="list"  class="container" style="margin-top:30px;">
   <div class="card">
       <header class="card-header">
           <p class="card-header-title">
-              {{activity_title}}
+              {{c.activity_title}}
               </p>
       </header>
       <div class="card-content">
           <div class="content">
-             <p> {{author_name}} </p>
-             <p> {{description}} </p>
-              <a href="#">@bulmaio</a>. <a href="#">#css</a> <a href="#">#responsive</a>
-              <br>
-              <time datetime='2020-1-1'> Due date:   {{due.day}} - {{due.month}} -  {{due.year}}  {{due.hour}} : {{due.minutes}}</time>
+             <p> {{author}} </p>
+             <p> {{c.description}} </p>
+             <a href="{{resource}}">Liga Externa</a>        
+                   <br>
+              <p> Due date:{{due}} </p>
           </div>
       </div>
       <footer class="card-footer">
@@ -96,11 +95,34 @@ Vue.component('activity', {
       </footer>
   </div>
 </div>`
-
 });
 
 
-
+var courseApp = new Vue({
+    el: "#activity",
+    data: {
+        lessons:[]
+    },
+    created: function(){
+        var url = "../api" + window.location.pathname
+        var vm = this 
+        fetch(url)
+        .then(res => {
+          if(res.ok) {
+              return res.json();
+          }
+          throw new Error(res.statusText);
+        })
+        .then(resJSON => {
+          vm.videos = resJSON.lessons;
+        }) 
+        .catch(err => {
+            vm.answer = err;
+        });
+      }
+    
+  
+  });
 
 
 
@@ -108,7 +130,7 @@ Vue.component('course', {
   template: `   <div class="card">
   <div class="card-image">
       <figure class="image is-128x128 is-horizontal-center">
-          <img src="./img/flooop.png" alt="Placeholder image">
+          <img src=".static/img/edge.jpg" alt="Placeholder image">
       </figure>
   </div>
   <div class="card-content">
@@ -133,13 +155,3 @@ var courseApp = new Vue({
   el: "course"
 });
 
-var courseApp = new Vue({
-  el: "#activity",
-  data:{
-      courses:[ 
-        {activity_title: "Quiz 1", description:"This quiz is to test previous abilities", author_name:"Oscar de la Renta", due:{day:20, month:2, year:2020, hour:23, minutes:59}},
-        {activity_title: "Lesson 1", description:"This lesson is to teach new abilities", author_name:"Mario Benavides", due:{day:20, month:2, year:2020, hour:23, minutes:59}},
-        {activity_title: "Activity 1", description:"This activity test previos abilities", author_name:"Oscar Garza", due:{day:20, month:2, year:2020, hour:23, minutes:59}}
-      ]
-  }
-});

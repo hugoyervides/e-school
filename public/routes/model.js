@@ -12,6 +12,8 @@ const {FIREBASE_TYPE,
        FIREBASE_AUTH_PROVIDER,
        FIREBASE_CLIENT_CERT_URL} = require('../../config');
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const admin = require("firebase-admin");
 
@@ -38,25 +40,54 @@ const db = admin.firestore();
 
 const userCollection = db.collection("users");
 const coursesCollection = db.collection("course");
+const lessonsCollection = db.collection("lesson");
+const messageCollection = db.collection("messages");
 
 router.post("/users", (req, res, next)=>{
-  if (req.body.name !=null && req.body.email != null) {
-    let docId = Math.floor(Math.random() * (99999 - 00000));
-    let newUser = {
-      "name": req.body.name,
-      "email": req.body.email
+  if (req.body.name !=null && req.body.email != null && req.body.password != null) {
+    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+      let docId = Math.floor(Math.random() * (99999 - 00000));
+      let newUser = {
+        "name": req.body.name,
+        "email": req.body.email,
+        "password": hash
+      }
+
+      userCollection.where('email', '==', req.body.email).get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            let setNewUser = userCollection.doc(String(docId)).set(newUser);
+            res.status(200).json({user: newUser});
+          } else {
+            res.statusMessage = "User already exists!";
+            res.status(500).json({message: "User already exists!"});
+          }
+        }).catch(err => {
+          res.statusMessage = err;
+          return res.status(500).json({message: err});
+        });
+    });
+  } else{
+      res.status(500).json({
+        message: "req.body params are undefined"
+      })
     }
-    let setNewUser = userCollection.doc(String(docId)).set(newUser);
+})
 
-    res.json({
-      "Message": "User successfully created"
-    })
-  }else{
-    res.json({
-      "Message": "req.body params are undefined"
-    })
+router.post("/messages", (req, res, next) => {
+  if (req.body.email && req.body.name && req.body.message) {
+    var newMessage = {
+      email: req.body.email,
+      name: req.body.name,
+      message: req.body.message
+    };
+    let docId = Math.floor(Math.random() * (99999 - 00000));
+    messageCollection.doc(String(docId)).set(newMessage);
+    return res.status(200).json({message: "Message sent!"});   
+  } else {
+    res.statusMessage = "Missing fields in message!"
+    return res.status(408).json({message: "Missing params in request!"});
   }
-
 })
 
 router.get("/admin/users", (req, res, next)=>{
@@ -181,6 +212,94 @@ router.get("/course/:id", (req, res, next) => {
       .catch(err => {
         return res.status(500).json(err);
       });
+});
+
+router.get("/videos/:id", (req, res, next) =>{
+  let id_ = +req.params.id;
+  lessonsCollection
+      .get()
+      .then(function(querySnapshot){
+        var lessons = [];
+        querySnapshot.forEach(function(doc){
+          if (doc.data().courseID == id_) {
+            lessons.push(doc.data())
+          }
+        });
+        return res.status(200).json({ lessons: lessons })
+      })
+      .catch(err => {
+        return req.status(500).json(err);
+      })
+})
+
+router.get("/users/login", (req, res, next) => {
+  sess = req.session;
+  console.log(sess.email);
+  if (!sess.email) {
+    return res.status(200).json({user: {}});
+  }
+  userCollection.where('email', '==', sess.email).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        console.log('No matching documents.');
+        return res.status(200).json({user: {}});
+      }
+
+      var user = {}
+      snapshot.forEach(doc => {
+        if (doc.id == sess.user_id) {
+          user = doc.data();
+        }
+      });
+      return res.status(200).json({user: user});
+    }).catch(err => {
+      console.error(err);
+      res.status(500).json({message: err});
+    })
+});
+
+router.post( "/users/login", ( req, res, next ) => {
+	let email = req.body.email;
+
+	if ( !email ){
+		res.statusMessage = "Missing 'email' field in params!";
+		return res.status( 406 ).json({
+			message : "Missing 'email' field in params!",
+			status : 406
+		});
+  }
+  
+  userCollection.where('email', '==', email).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        res.statusMessage = 'User not found.';
+        return res.status(404).json("No matching documents");
+      }
+
+      snapshot.forEach(doc => {
+        var user = doc.data();
+        bcrypt.compare(req.body.password, user.password, function(err, compRes) {
+          if (compRes) {
+            sess = req.session;
+            sess.email = email;
+            sess.user_id = doc.id;
+            user.password = "";
+  
+            return res.status(200).json( user );
+          } else {
+            return res.status(401).json("Incorrect password.");
+          }
+        });
+      });
+    }).catch(err => {
+      return res.status(500).json({message: err});
+    })
+});
+
+router.post("/users/logout", (req, res, next) => {
+	req.session.destroy();
+
+	return res.status(200).json("Successful log out.");
 });
 
 module.exports = router;

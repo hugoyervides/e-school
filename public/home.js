@@ -5,64 +5,8 @@ var appCompanyTitle = new Vue({
   }
 });
 
-Vue.component('navcomponent',{
-  template : `<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item">
-        <img v-bind:src="logo" width="auto">
-      </a>
-
-      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-    <div id="navbarBasicExample" class="navbar-menu">
-      <div class="navbar-start">
-        <a v-for="item in navbarItems" class="navbar-item" v-on:click="goto(item.goto)">
-          {{ item.text }}
-        </a>
-        </div>
-      </div>
-
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <a class="button is-primary">
-              <strong>{{ signup }}</strong>
-            </a>
-            <a class="button is-light">
-              {{ login }}
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>`,
-  data: function() { return {
-    logo: "./static/img/google.png",
-    navbarItems: [
-      {text: "Home", goto: "/" },
-      {text: "Courses", goto: "/search" },
-    ],
-    signup: "Sign Up",
-    login: "Log In"
-    }
-  },
-  methods: {
-    goto: function(path) {
-      window.location.href = path
-    }
-  }
-});
-
-var navbarApp = new Vue({
-  el: '#appNavBar'
-});
-
 Vue.component("coursecard", {
-  props: ['img', 'author_img', 'description', 'author_name', 'author_title'],
+  props: ['img', 'author_img', 'description', 'author_name', 'author_title', 'title', 'id_'],
   template: `
               <div class="card">
                 <div class="card-image">
@@ -78,7 +22,8 @@ Vue.component("coursecard", {
                       </figure>
                     </div>
                     <div class="media-content">
-                      <p class="title is-4">{{ author_name }}</p>
+                      <p class="title is-4">{{ title }}</p>
+                      <p class="subtitle is-4">{{ author_name }}</p>
                       <p class="subtitle is-6">{{ author_title }}</p>
                     </div>
                   </div>
@@ -86,11 +31,16 @@ Vue.component("coursecard", {
                   <div class="content">
                     {{ description }}
                   </div>
-                  <a class="button is-primary">
+                  <a class="button is-primary" v-on:click="goto(id_)">
                       <strong>Enroll</strong>
                     </a>
                 </div>
-              </div>`
+              </div>`,
+  methods: {
+    goto: function(id_) {
+      window.location.href = "course/" + id_;
+    }
+  }
 })
 
 var appFeaturedCourses = new Vue({
@@ -98,34 +48,33 @@ var appFeaturedCourses = new Vue({
   data: {
     featuredCoursesTitle: "Featured Courses",
     featuredCourses: [
-      {
-        img: "./static/img/course1.jpg",
-        author: {
-          name: "John Smith",
-          img: "./static/img/professor1.jpg",
-          title: "Entrepreneur"
-        },
-        description: "This is a sample course description."
-      },
-      {
-        img: "./static/img/course2.jpg",
-        author: {
-          name: "Dahlia Hawthorne",
-          img: "./static/img/professor2.jpg",
-          title: "Entrepreneur"
-        },
-        description: "This is a sample course description."
-      },
-      {
-        img: "./static/img/course3.jpg",
-        author: {
-          name: "Jessye Davis",
-          img: "./static/img/professor3.jpg",
-          title: "Consultant"
-        },
-        description: "This is a sample course description."
-      },
     ]
+  },
+  created: function() {
+    var url = "api/courses";
+      var vm = this
+      fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({
+          "query": ""
+        }),
+        headers:{
+          'Content-Type': 'application/json'
+        }})
+        .then(res => {
+          if(res.ok) {
+              return res.json();
+          }
+          throw new Error(res.statusText);
+        })
+        .then(resJSON => {
+          if (resJSON.courses.length >= 3) {
+            vm.featuredCourses = [resJSON.courses[0], resJSON.courses[1], resJSON.courses[2]];
+          }
+        }) 
+        .catch(err => {
+            // vm.answer = err;
+        }); 
   }
 })
 
@@ -167,11 +116,21 @@ Vue.component("hero", {
                     <h2 class="subtitle">
                         {{ body }}
                     </h2>
-                    <a class="button is-light">
+                    <a class="button is-light" v-on:click="performAction(action)">
                         <strong>{{ action }}</strong>
                     </a>
                 </div>
-            </div>`
+            </div>`,
+  methods: {
+    performAction: function(action) {
+      if (action == "Start Growing") {
+        window.location.href = "/search";
+      }
+      if (action == "Create Account") {
+        $(".modal").toggleClass("is-active");
+      }
+    }
+  }
 })
 
 Vue.component("hero-no-button", {
@@ -214,5 +173,59 @@ var heroApp3 = new Vue({
   data: {
     heroDescription: `If you still have questions, we're happy to help.`,
     heroTitle: `Contact Us`
+  }
+})
+
+var formApp = new Vue({
+  el: "#appForm",
+  data: {
+    name: "",
+    email: "",
+    message: "",
+    errorMessage: "",
+    successMessage: "",
+    terms: false
+  },
+  methods: {
+    submitMessage: function() {
+      if (!this.terms) {
+        this.errorMessage = "Check the Terms and Conditions.";
+        return;
+      }
+      this.errorMessage = "";
+      if (this.name == "") {
+        this.errorMessage += "Please input a name.\n";
+        return;
+      }
+      if (this.email == "") {
+        this.errorMessage += "Please input an email.\n";
+        return;
+      }
+      if (this.message == "") {
+        this.errorMessage += "Please input a message.\n";
+        return;
+      }
+      var vm = this;
+      fetch("./api/messages", {
+        method: "POST",
+        body: JSON.stringify({
+          name: vm.name,
+          email : vm.email,
+          message: vm.message
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }}).then(res => {
+          if (res.ok) {
+            return res.json();
+          }
+          throw new Error(res.statusText);
+        }).then(resJSON => {
+          vm.successMessage = "Message sent!";
+        })
+        .catch(err => {
+          vm.errorMessage = err;
+        })
+    }
   }
 })

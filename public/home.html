@@ -7,14 +7,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body>
   <section class="section">
     <div class="container">
         <!-- Navbar -->
         <div id = "appNavBar">
-            <navcomponent></navcomponent>
-         </div>
+            <navcomponent
+              v-bind:user="user"
+            ></navcomponent>
+        </div>
+        <!-- Log In Modal -->
+        <div class="modal" id="appLogin">
+          <logincomponent>
+          </logincomponent>
+        </div>
         <!-- Company Title Header -->
         <div id="appCompanyTitle">
             <h1 class="title is-1">{{ company }}</h1>
@@ -26,7 +34,9 @@
             <coursecard
                 v-for="course in featuredCourses"
                 v-bind:key="course.id"
+                v-bind:id_="course.id"
                 v-bind:img="course.img"
+                v-bind:title="course.name"
                 v-bind:author_img="course.author.img"
                 v-bind:author_title="course.author.title"
                 v-bind:author_name="course.author.name"
@@ -115,57 +125,60 @@
             <hero-no-button
                 v-bind:title="heroTitle"
                 v-bind:body="heroDescription"
-                v-bind:action="heroAction"
                 class="hero is-primary" style="text-align: center;">
             </hero-no-button>
         </div>
         <!-- Contact Section, simple form -->
-        <section class="section">
+        <section class="section" id="appForm">
             <div class="field">
                 <label class="label">Name</label>
                 <div class="control">
-                  <input class="input" type="text" placeholder="Text input">
+                  <input class="input" type="text" placeholder="Text input" v-model="name">
                 </div>
               </div>
 
               <div class="field">
                 <label class="label">Email</label>
                 <div class="control has-icons-left has-icons-right">
-                  <input class="input is-danger" type="email" placeholder="Email input">
+                  <input class="input" type="email" placeholder="Email input" v-model="email">
                   <span class="icon is-small is-left">
                     <i class="fas fa-envelope"></i>
                   </span>
-                  <span class="icon is-small is-right">
+                  <!--<span class="icon is-small is-right">
                     <i class="fas fa-exclamation-triangle"></i>
-                  </span>
+                  </span>-->
                 </div>
-                <p class="help is-danger">This email is invalid</p>
               </div>
 
               <div class="field">
                 <label class="label">Message</label>
                 <div class="control">
-                  <textarea class="textarea" placeholder="Textarea"></textarea>
+                  <textarea class="textarea" placeholder="Textarea" v-model="message"></textarea>
                 </div>
               </div>
 
               <div class="field">
                 <div class="control">
                   <label class="checkbox">
-                    <input type="checkbox">
+                    <input type="checkbox" v-model="terms">
                     I agree to the <a href="#">terms and conditions</a>
                   </label>
                 </div>
               </div>
 
+              
               <div class="field is-grouped">
                 <div class="control">
-                  <button class="button is-link">Submit</button>
+                  <p class="help is-primary">{{ successMessage }}</p>
+                  <p class="help is-danger">{{ errorMessage }}</p>
+                  <button class="button is-link" v-on:click="submitMessage()">Submit</button>
                 </div>
               </div>
         </section>
     </div>
   </section>
+  <script type="text/javascript" src="./static/logincomponent.js"></script>
+  <script type="text/javascript" src="./static/navcomponent.js"></script>
   <script type="text/javascript" src="./static/home.js"></script>
   </body>
 </html>
