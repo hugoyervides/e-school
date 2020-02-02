@@ -1,3 +1,5 @@
+var dismissed = 1;
+
 var appCompanyTitle = new Vue({
   el: '#appCompanyTitle',
   data: {
@@ -5,8 +7,8 @@ var appCompanyTitle = new Vue({
   }
 });
 
-Vue.component('navcomponentlogged',{
-  template : `<nav class="navbar" role="navigation" aria-label="main navigation">
+Vue.component('navcomponentlogged', {
+  template: `<nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item">
         <img v-bind:src="logo" width="auto">
@@ -54,13 +56,14 @@ Vue.component('navcomponentlogged',{
       </div>
     </div>
   </nav>`,
-  data: function() { return {
-    logo: "./static/img/google.png",
-    navbarItems: [
-      {text: "Home" },
-      {text: "My Courses" },
-    ],
-    name: 'Gabriel'
+  data: function () {
+    return {
+      logo: "../static/img/google.png",
+      navbarItems: [
+        { text: "Home" },
+        { text: "My Courses" },
+      ],
+      name: 'Gabriel'
     }
   }
 });
@@ -71,93 +74,104 @@ var navbarApp = new Vue({
 
 
 
-Vue.component('activity', {
-  props: {
-    author: String,
-    resource: String,
-    activity_title: String,
-    due: String,
-    description: String,
-},
-  template: ` <div id="list"  class="container" style="margin-top:30px;">
-  <div class="card">
-      <header class="card-header">
-          <p class="card-header-title">
-              {{activity_title}}
-              </p>
-      </header>
-      <div class="card-content">
-          <div class="content">
-             <p> {{author}} </p>
-             <p> {{description}}  </p>
-             <a href="{{resource}}">Liga Externa</a>        
-                   <br>
-              <p> Due date: {{due}} </p>
-          </div>
-      </div>
-      <footer class="card-footer">
-          <a href="#" class="card-footer-item">Dismiss</a>
-          <a href="#" class="card-footer-item">Entregar Tarea</a>
-      </footer>
-  </div>
-</div>`
-});
 
+
+
+
+
+
+// Vue.component('course', {
+//   template: `   <div class="card">
+//   <div class="card-image">
+//       <figure class="image is-128x128 is-horizontal-center">
+//           <img src="./img/flooop.png" alt="Placeholder image">
+//       </figure>
+//   </div>
+//   <div class="card-content">
+//       <div class="media-left">
+//           <div class="media-content">
+//               <p class="title is-4"> {{videos.title}}</p>
+//               <p class="subtitle is-6"> Videos: {{videos.vistos}} / {{videos.disponibles}}</p>
+//           </div>
+//       </div>
+//   </div>
+// </div>`,
+
+//   data: function () {
+//     return {
+//       videos: { vistos: 1, disponibles: 2 }
+//     }
+//   }
+
+// })
 
 var courseApp = new Vue({
-    el: "#activity",
-    data: {
-        todos:[ ]
-    },
-    created: function(){
-        var url = "../api" + window.location.pathname
-        var vm = this 
-        fetch(url)
-        .then(res => {
-          if(res.ok) {
-              return res.json();
-          }
-          throw new Error(res.statusText);
-        })
-        .then(resJSON => {
-            vm.todos = resJSON.courses;
-            console.log(vm.todos);
+  el: "course"
+});
 
-        }) 
-        .catch(err => {
-            vm.todos = err;
-        });
-      }
-    
-  
-  });
-
-
-
-Vue.component('course', {
-  template: `   <div class="card">
-  <div class="card-image">
-      <figure class="image is-128x128 is-horizontal-center">
-          <img src=".static/img/edge.jpg" alt="Placeholder image">
-      </figure>
-  </div>
-  <div class="card-content">
-      <div class="media-left">
-          <div class="media-content">
-              <p class="title is-4"> {{videos.title}}</p>
-              <p class="subtitle is-6"> Videos: {{videos.vistos}} / {{videos.disponibles}}</p>
+Vue.component('activities', {
+  props: {
+    activity_title: String,
+    author: String,
+    description: String,
+    due: String,
+  },
+  template: `
+       <section >
+          <div   class="card" >
+          <header class="card-header">
+          <p class="card-header-title">
+          {{ activity_title }} </p>
+          </header>
+              <div class="card-content">
+              <div class="content">
+               <p >{{ author }}</p>
+              <p>{{ description }}</p>
+              <p>{{due}}.toString()</p>
+              
+              </div>
+              </div>
+           
+            <footer class="card-footer" >
+             <a href="#" @click="onSeen" class="card-footer-item">Dismiss </a> 
+              <a href="" class="card-footer-item">Submit</a>
+            </footer>
+          
           </div>
-      </div>
-  </div>
-</div>`,
-
-data: function()
-{return{
-videos: {vistos:1, disponibles:2}
-} 
-}
-
+       </section> 
+  `,
+  methods: {
+    onSeen(){
+      preventDefault()
+      if(this.dismissed===1)
+          this.dismissed = 0;
+      else
+          this.dismissed = 1;
+  },
+  }
+});
+new Vue({
+  el: '#activity',
+  data: {
+    todos: []
+  },
+  created: function () {
+    var url = "../api" + window.location.pathname
+    var vm = this
+    fetch(url)
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error(res.statusText);
+      })
+      .then(resJSON => {
+        vm.todos = resJSON.courses;
+        console.log(vm.todos)
+      })
+      .catch(err => {
+        vm.answer = err;
+      });
+  }
 })
-
-
 
