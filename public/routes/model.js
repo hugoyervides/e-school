@@ -1,4 +1,5 @@
 const express = require("express");
+const moment = require('moment');
 const router = express.Router();
 
 const {FIREBASE_TYPE,
@@ -231,6 +232,33 @@ router.get("/course-enrolled/:id", (req, res, next) =>{
       .catch(err => {
         return req.status(500).json(err);
       })
+})
+
+
+router.post("course/lesson", (req,res, next)=>{
+  if (req.body.courseID !=null && req.body.title !=null && req.body.decription != null && req.body.author != null && req.body.resource != null && req.body.due != null) {
+    let lessonID = Math.floor(Math.random() * (99999 - 00000));
+    let newLesson = {
+      "courseID": req.body.courseID,
+      "activity_title": req.body.activity_title,
+      "type": req.body.type,
+      "description": req.body.description,
+      "author": req.body.author,
+      "resource": req.body.resource,
+      "due": req.body.due
+    }
+ 
+  lessonsCollection.doc(String(lessonID)).set(newLesson);
+  res.json({
+    "Message": "Lesson successfully created"
+  })
+}
+else{
+  res.json({
+    "Message": "Lesson params in body."
+  })
+}
+
 })
 
 router.get("/users/login", (req, res, next) => {

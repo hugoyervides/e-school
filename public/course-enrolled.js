@@ -1,5 +1,4 @@
-var dismissed = 1;
-
+var dismiss = false
 var appCompanyTitle = new Vue({
   el: '#appCompanyTitle',
   data: {
@@ -75,50 +74,18 @@ var navbarApp = new Vue({
 
 
 
-
-
-
-
-
-// Vue.component('course', {
-//   template: `   <div class="card">
-//   <div class="card-image">
-//       <figure class="image is-128x128 is-horizontal-center">
-//           <img src="./img/flooop.png" alt="Placeholder image">
-//       </figure>
-//   </div>
-//   <div class="card-content">
-//       <div class="media-left">
-//           <div class="media-content">
-//               <p class="title is-4"> {{videos.title}}</p>
-//               <p class="subtitle is-6"> Videos: {{videos.vistos}} / {{videos.disponibles}}</p>
-//           </div>
-//       </div>
-//   </div>
-// </div>`,
-
-//   data: function () {
-//     return {
-//       videos: { vistos: 1, disponibles: 2 }
-//     }
-//   }
-
-// })
-
-var courseApp = new Vue({
-  el: "course"
-});
-
 Vue.component('activities', {
+
   props: {
     activity_title: String,
     author: String,
     description: String,
-    due: String,
+    due: Date,
   },
   template: `
-       <section >
-          <div   class="card" >
+       <section>
+       <div class="container margin-top:30px" >
+          <div :v-show="dismiss"  class="card" >
           <header class="card-header">
           <p class="card-header-title">
           {{ activity_title }} </p>
@@ -127,28 +94,35 @@ Vue.component('activities', {
               <div class="content">
                <p >{{ author }}</p>
               <p>{{ description }}</p>
-              <p>{{due}}.toString()</p>
+              <p>{{convert(due._seconds, due._nanoseconds)}}</p> 
               
               </div>
               </div>
            
             <footer class="card-footer" >
-             <a href="#" @click="onSeen" class="card-footer-item">Dismiss </a> 
-              <a href="" class="card-footer-item">Submit</a>
+             <a @click="hitDismiss" class="card-footer-item">Dismiss </a> 
+              <a  class="card-footer-item">Submit</a>
             </footer>
-          
           </div>
+        </div>
        </section> 
   `,
   methods: {
-    onSeen(){
-      preventDefault()
-      if(this.dismissed===1)
-          this.dismissed = 0;
-      else
-          this.dismissed = 1;
-  },
-  }
+ convert(seconds, nanoseconds){
+   nanoseconds = nanoseconds/1000000000
+   seconds += nanoseconds
+     return  new Date(seconds*1000)
+ },
+ hitDismiss(){
+  
+      dismiss = !dismiss
+      console.log("you hit dismiss is: " + dismiss)
+    
+    
+   }
+ }
+
+  
 });
 new Vue({
   el: '#activity',
@@ -174,4 +148,7 @@ new Vue({
       });
   }
 })
+
+
+
 
