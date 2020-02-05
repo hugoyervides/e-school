@@ -3,6 +3,7 @@ const {PORT} = require('./config');
 const express = require('express')
 const bodyParser = require("body-parser")
 const app = express();
+const axios = require('axios');
 
 const model = require("./public/routes/model");
 
@@ -36,7 +37,7 @@ app.get('/admin', (req, res) => {
   return res.sendFile("admin.html", {root:"public"});
 });
 
-app.get('/course-enrolled', (req, res) => {
+app.get('/course-enrolled/:id', (req, res) => {
   return res.sendFile("course-enrolled.html", {root: "public"});
 });
 

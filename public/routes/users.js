@@ -62,35 +62,6 @@ router.get("/admin/users", (req, res, next)=>{
     })
 })
 
-// router.get("/course/lesson", (req, res, next)=>{
-//   let lessonRef = lessonCollection;
-
-//   let query = lessonRef.where('courseID', '==', '56216').get()
-//     .then(snapshot => {
-//       if (snapshot.empty) {
-//         console.log('No matching documents.');
-//         return;
-//       }
-
-//       var docs = []
-//       snapshot.forEach(doc => {
-//         const data = {
-//           'author': doc.data().author,
-//           'activity_title': doc.data().activity_title,
-//           'description': doc.data().description,
-//           'resource': doc.data().resource,
-//           'due': doc.data().due
-          
-//         }
-//         docs.push(data)
-//       });
-
-//       res.send(docs);
-//     })
-//     .catch(err => {
-//       console.log('Error getting documents', err);
-//     })
-// })
 
 router.get("/lessons/:id", (req, res, next) =>{
   let id_ = +req.params.id;
