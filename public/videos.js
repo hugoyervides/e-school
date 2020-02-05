@@ -6,7 +6,7 @@ Vue.component('videoviewer',{
         description: String,
     },
     template : `
-            <div class="card tile">
+            <div class="card">
                 <div class="card-image">
                 <figure>
                     <iframe width="440" height="255" v-bind:src="resource" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
