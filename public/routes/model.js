@@ -85,7 +85,7 @@ router.post("/messages", (req, res, next) => {
     };
     let docId = Math.floor(Math.random() * (99999 - 00000));
     messageCollection.doc(String(docId)).set(newMessage);
-    return res.status(200).json({message: "Message sent!"});   
+    return res.status(200).json({message: "Message sent!"});
   } else {
     res.statusMessage = "Missing fields in message!"
     return res.status(408).json({message: "Missing params in request!"});
@@ -138,7 +138,7 @@ router.post("/course", (req, res, next) => {
       "author": req.body.author,
       "description": req.body.description,
       "reviews": req.body.reviews,
-      "admin_id": req.body.admin_id
+      "admin_id": "obedgm@gmail.com"
     }
     let setNewCourse = coursesCollection.doc(String(docId)).set(newCourse);
 
@@ -267,7 +267,7 @@ router.post("course/lesson", (req,res, next)=>{
       "resource": req.body.resource,
       "due": req.body.due
     }
- 
+
   lessonsCollection.doc(String(lessonID)).set(newLesson);
   res.json({
     "Message": "Lesson successfully created"

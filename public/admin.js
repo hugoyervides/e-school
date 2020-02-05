@@ -215,8 +215,8 @@ Vue.component('ComponentE',{
   <div class="field">
     <label class="label">Name</label>
     <div class="control has-icons-right">
-      <input id="username-input" class="input" type="text" placeholder="Typer your email" v-model="username" v-on:input="checkUsername">
-      <span id="usernameIcon" style="visibility: hidden" class="icon is-small is-right">
+      <input id="name-input" class="input" type="text" v-model="name">
+      <span id="nameIcon" style="visibility: hidden" class="icon is-small is-right">
         <i class="fas fa-check"></i>
       </span>
     </div>
@@ -225,7 +225,7 @@ Vue.component('ComponentE',{
   <div class="field">
     <label class="label">Descripción</label>
     <div class="control has-icons-right">
-      <input id="username-input" class="input" type="text" placeholder="Typer your email" v-model="username" v-on:input="checkUsername">
+      <input id="description-input" class="input" type="text" v-model="description">
       <span id="usernameIcon" style="visibility: hidden" class="icon is-small is-right">
         <i class="fas fa-check"></i>
       </span>
@@ -235,15 +235,52 @@ Vue.component('ComponentE',{
   <div class="field">
     <label class="label">Imagen Link</label>
     <div class="control has-icons-right">
-      <input id="username-input" class="input" type="text" placeholder="Typer your email" v-model="username" v-on:input="checkUsername">
+      <input id="link-input" class="input" type="text" v-model="image">
       <span id="usernameIcon" style="visibility: hidden" class="icon is-small is-right">
         <i class="fas fa-check"></i>
       </span>
     </div>
   </div>
 
+  <div class="field">
+    <label class="label">Instructor ID</label>
+    <div class="control has-icons-right">
+      <input id="author-input" class="input" type="text" v-model="author">
+      <span id="usernameIcon" style="visibility: hidden" class="icon is-small is-right">
+        <i class="fas fa-check"></i>
+      </span>
+    </div>
+  </div>
 
-  </div>`
+  <button class="button is-primary" v-on:click="postCourse()">Agregar curso</button>
+  </div>`,
+  data: function(){
+    return{
+      name: "",
+      description: "",
+      image: "",
+      author: ""
+    }
+  },
+  methods: {
+    postCourse: function(){
+      axios.post('/api/course',{
+        name: this.name,
+        description: this.description,
+        img: this.image,
+        author: this.author,
+        reviews: ""
+      }).then((response) =>{
+        alert("Curso agregado correctamente");
+        document.getElementById('name-input').value = "";
+        document.getElementById('description-input').value = "";
+        document.getElementById('link-input').value = "";
+        document.getElementById('author-input').value = "";
+      }, (error) => {
+        console.log(error)
+      })
+    }
+  }
 })
 
 Vue.component('ComponentF',{
