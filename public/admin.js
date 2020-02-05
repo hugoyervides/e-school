@@ -284,11 +284,116 @@ Vue.component('ComponentE',{
 })
 
 Vue.component('ComponentF',{
-  template:"<h4>Borrar</h4>"
+  template:`<div>
+      <h4>Cursos</h4>
+      <table class="table" onShow="getCourses()">
+        <thead>
+          <tr>
+            <th>Course ID</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+            <th>Course ID</th>
+            <th>Name</th>
+          </tr>
+        </tfoot>
+        <tbody>
+          <tr v-for="course in courses">
+              <td>{{ course.id }}</td>
+              <td>{{ course.name }}</td>
+              <td><a class="delete"></a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>`,
+  data: function() { return {
+    courses: []
+  }},
+  created: function() {
+      var url = "/api/courses"
+      var vm = this
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          query: ""
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error(res.statusText);
+      }).then(resJSON => {
+        vm.courses = resJSON.courses;
+      }).catch(err => {
+        console.error(err);
+      });
+  }
 })
 
 Vue.component('ComponentG',{
-  template:"<h4>Asignar Cursos</h4>"
+  template:`
+  <div>
+    <h4>Asignar Cursos</h4>
+    <div class="field">
+      <p class="control has-icons-left has-icons-right">
+        <input class="input" type="email" placeholder="Email" v-model="username">
+        <span class="icon is-small is-left">
+          <i class="fas fa-envelope"></i>
+        </span>
+      </p>
+    </div>
+    <div class="field">
+      <p class="control has-icons-left has-icons-right">
+        <input class="input" type="email" placeholder="CourseID" v-model="course">
+      </p>
+    </div>
+    <button class="button is-success" v-on:click="enroll()">Enroll</button>
+    {{ message }}
+  </div>`,
+  data: function() { return {
+    username: "",
+    course: "",
+    message: ""
+  }},
+  methods: {
+    enroll: function() {
+      var url = "api/enroll"
+      var vm = this;
+
+      if (this.username == "") {
+        this.message = "Please input username."
+        return;
+      }
+      if (this.course == "") {
+        this.message = "Please input course ID."
+        return;
+      }
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          email: vm.username,
+          course: vm.course
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        throw new Error(res.statusText);
+      }).then(resJSON => {
+        vm.message = "User enrolled to course successfully."
+      }).catch(err => {
+        vm.message = err;
+      });
+    }
+  }
 })
 
 var navbarApp = new Vue({
@@ -313,7 +418,7 @@ Vue.component('menucomponent',{
     <li>
       <ul>
         <li @click="getComponent('E')"><a>Agregar Curso</a></li>
-        <li @click="getComponent('F')"><a>Borrar Cursos</a></li>
+        <li @click="getComponent('F')"><a>Cursos</a></li>
         <li @click="getComponent('G')"><a>Asignar Curso</a></li>
       </ul>
     </li>

@@ -117,6 +117,46 @@ router.get("/admin/users", (req, res, next)=>{
     })
 })
 
+function onlyUnique(value, index, self) { 
+  return self.indexOf(value) === index;
+}
+
+router.post("/enroll", (req, res, next) => {
+  let usersRef = db.collection('users');
+  usersRef.where('email', '==', req.body.email).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        res.statusMessage = "User with email " + req.body.email + " not found.";
+        return res.status(404).json("User with email " + req.body.email + " not found.");
+      }
+
+      snapshot.forEach(doc => {
+        let user = doc.data();
+        var newCourses = [];
+        if (user.courses) {
+          newCourses = user.courses;
+        }
+
+        coursesCollection.doc(req.body.course).get().then((docData) => {
+          if (docData.exists) {
+            newCourses.push(req.body.course);
+            usersRef.doc(doc.id).update({courses: newCourses.filter(onlyUnique)});
+            return res.status(200).json("Enrolled user to course successfully.");
+          } else {
+            res.statusMessage = "Course not found.";
+            return res.status(404).json("Course not found.");
+          }
+        }).catch((fail) => {
+          res.statusMessage = fail;
+          res.status(500).json(fail);
+        });
+      });
+    }).catch(err => {
+      res.statusMessage = err;
+      res.status(500).json(err);
+    });
+})
+
 /*
 {
   name: "abc"
