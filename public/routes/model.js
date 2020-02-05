@@ -50,6 +50,7 @@ router.post("/users", (req, res, next)=>{
       let newUser = {
         "name": req.body.name,
         "email": req.body.email,
+        "admin_id": req.body.admin,
         "password": hash
       }
 
@@ -135,7 +136,8 @@ router.post("/course", (req, res, next) => {
       "img": req.body.img,
       "author": req.body.author,
       "description": req.body.description,
-      "reviews": req.body.reviews
+      "reviews": req.body.reviews,
+      "admin_id": req.body.admin_id
     }
     let setNewCourse = coursesCollection.doc(String(docId)).set(newCourse);
 
@@ -268,7 +270,7 @@ router.post( "/users/login", ( req, res, next ) => {
 			status : 406
 		});
   }
-  
+
   userCollection.where('email', '==', email).get()
     .then(snapshot => {
       if (snapshot.empty) {
@@ -284,7 +286,7 @@ router.post( "/users/login", ( req, res, next ) => {
             sess.email = email;
             sess.user_id = doc.id;
             user.password = "";
-  
+
             return res.status(200).json( user );
           } else {
             return res.status(401).json("Incorrect password.");
