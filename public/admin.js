@@ -60,24 +60,28 @@ Vue.component('ComponentA',{
 Vue.component('ComponentB',{
   template:`
   <div>
-  <button class="button is-primary">Agregar usuario</button>
   <table class="table" onShow="getUsers()">
+
   <thead>
     <tr>
       <th>Email</th>
       <th>Name</th>
+      <th></th>
     </tr>
   </thead>
   <tfoot>
     <tr>
       <th>Email</th>
       <th>Name</th>
+      <th></th>
     </tr>
   </tfoot>
   <tbody>
     <tr v-for="user in users">
         <td>{{ user.email }}</td>
         <td>{{ user.name }}</td>
+        <td><a class="delete"></a></td>
+
     </tr>
   </tbody>
 </table>
@@ -102,8 +106,152 @@ Vue.component('ComponentB',{
   },
   mounted() {
     this.getUsers();
-    console.log(this.users)
   }
+})
+
+Vue.component('ComponentC',{
+  template:
+  `
+  <div>
+  <div class="field">
+    <label class="label">Name</label>
+    <div class="control has-icons-right">
+      <input id="name-input" class="input" type="text" placeholder="Type your name" v-model="name" v-on:input="checkName">
+      <span id="nameIcon" style="visibility: hidden" class="icon is-small is-right">
+        <i class="fas fa-check"></i>
+      </span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Email</label>
+    <div class="control has-icons-right">
+      <input id="username-input" class="input" type="text" placeholder="Typer your email" v-model="username" v-on:input="checkUsername">
+      <span id="usernameIcon" style="visibility: hidden" class="icon is-small is-right">
+        <i class="fas fa-check"></i>
+      </span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Password</label>
+    <div class="control">
+      <input id="password-input" class="input" type="password" placeholder="Text input">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Confirm Password</label>
+    <div class="control">
+      <input id="confirmation-input" class="input" type="password" placeholder="Text input">
+    </div>
+  </div>
+  <button class="button is-primary" v-on:click="postUser()">Agregar usuario</button>
+  </div>`,
+  data: function(){
+    return {
+      username: "",
+      name: "",
+      password: "",
+      confirmation: "",
+      admin: "obedgm@gmail.com"
+    }
+  },
+  methods: {
+    checkName: function(){
+      if (this.name.length > 0) {
+        document.getElementById("name-input").classList.add('is-success');
+        document.getElementById("name-input").classList.remove('is-danger');
+        $("#nameIcon").css("visibility", "visible");
+      }else{
+        document.getElementById("name-input").classList.remove('is-success');
+        document.getElementById("name-input").classList.add('is-danger');
+        $("#nameIcon").css("visibility", "hidden");
+      }
+    },
+    checkUsername: function(){
+      if (this.username.length > 0) {
+        document.getElementById("username-input").classList.add('is-success');
+        document.getElementById("username-input").classList.remove('is-danger');
+        $("#usernameIcon").css("visibility", "visible");
+      }else{
+        document.getElementById("username-input").classList.remove('is-success');
+        document.getElementById("username-input").classList.add('is-danger');
+        $("#usernameIcon").css("visibility", "hidden");
+      }
+    },
+    postUser: function(){
+      console.log("hello")
+      axios.post('/api/users', {
+        name: this.name,
+        email: this.username,
+        password: this.password,
+        admin: this.admin
+      }).then((response) => {
+        alert("Usuario agregado correctamente");
+        document.getElementById('name-input').value = "";
+        document.getElementById('username-input').value = "";
+        document.getElementById('password-input').value = "";
+        document.getElementById('confirmation-input').value = "";
+        document.getElementById("name-input").classList.remove('is-success');
+        document.getElementById("username-input").classList.remove('is-success');
+      }, (error) => {
+        console.log(error);
+      });
+
+    }
+  }
+})
+
+Vue.component('ComponentD',{
+  template:"<h4>Cursos</h4>"
+})
+
+Vue.component('ComponentE',{
+  template:
+  `
+  <div>
+
+  <div class="field">
+    <label class="label">Name</label>
+    <div class="control has-icons-right">
+      <input id="username-input" class="input" type="text" placeholder="Typer your email" v-model="username" v-on:input="checkUsername">
+      <span id="usernameIcon" style="visibility: hidden" class="icon is-small is-right">
+        <i class="fas fa-check"></i>
+      </span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Descripción</label>
+    <div class="control has-icons-right">
+      <input id="username-input" class="input" type="text" placeholder="Typer your email" v-model="username" v-on:input="checkUsername">
+      <span id="usernameIcon" style="visibility: hidden" class="icon is-small is-right">
+        <i class="fas fa-check"></i>
+      </span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Imagen Link</label>
+    <div class="control has-icons-right">
+      <input id="username-input" class="input" type="text" placeholder="Typer your email" v-model="username" v-on:input="checkUsername">
+      <span id="usernameIcon" style="visibility: hidden" class="icon is-small is-right">
+        <i class="fas fa-check"></i>
+      </span>
+    </div>
+  </div>
+
+
+  </div>`
+})
+
+Vue.component('ComponentF',{
+  template:"<h4>Borrar</h4>"
+})
+
+Vue.component('ComponentG',{
+  template:"<h4>Asignar Cursos</h4>"
 })
 
 var navbarApp = new Vue({
@@ -118,21 +266,20 @@ Vue.component('menucomponent',{
   <ul class="menu-list">
     <li @click="getComponent('A')"><a>Dashboard</a></li>
     <li @click="getComponent('B')"><a>Usuarios</a></li>
+    <li @click="getComponent('C')"><a>Agregar Usuarios</a></li>
   </ul>
   <p class="menu-label">
     Administración
   </p>
   <ul class="menu-list">
-    <li><a>Cursos</a></li>
+    <li @click="getComponent('D')"><a>Cursos</a></li>
     <li>
-      <a>Maneja Cursos</a>
       <ul>
-        <li><a>Agregar Curso</a></li>
-        <li><a>Borrar Cursos</a></li>
-        <li><a>Asignar Curso</a></li>
+        <li @click="getComponent('E')"><a>Agregar Curso</a></li>
+        <li @click="getComponent('F')"><a>Borrar Cursos</a></li>
+        <li @click="getComponent('G')"><a>Asignar Curso</a></li>
       </ul>
     </li>
-    <li><a>Perfil</a></li>
   </ul>
 </aside>`,
   methods:{
@@ -141,6 +288,7 @@ Vue.component('menucomponent',{
     }
   }
 })
+
 
 var menuAdmin = new Vue({
   el: '#adminMenu'
