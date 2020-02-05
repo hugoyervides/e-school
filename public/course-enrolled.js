@@ -76,19 +76,16 @@ var navbarApp = new Vue({
 
 Vue.component('activities', {
 
-  props: {
-    activity_title: String,
-    author: String,
-    description: String,
-    due: Date,
-  },
+  props: [
+    "activity_title", "author", "description", "due"
+  ],
   template: `
        <section>
-       <div class="container margin-top:30px" >
-          <div :v-show="dismiss"  class="card" >
+       <div class="container margin-top:30px" v-show="dismiss">
+          <div class="card" >
           <header class="card-header">
           <p class="card-header-title">
-          {{ activity_title }} </p>
+          {{ activity_title }}</p>
           </header>
               <div class="card-content">
               <div class="content">
@@ -100,13 +97,18 @@ Vue.component('activities', {
               </div>
            
             <footer class="card-footer" >
-             <a @click="hitDismiss" class="card-footer-item">Dismiss </a> 
+             <a @click="hitDismiss" class="card-footer-item" >Dismiss </a> 
               <a  class="card-footer-item">Submit</a>
             </footer>
           </div>
         </div>
        </section> 
   `,
+  data: function () {
+    return {
+      dismiss: true
+    }
+  },
   methods: {
  convert(seconds, nanoseconds){
    nanoseconds = nanoseconds/1000000000
@@ -114,11 +116,7 @@ Vue.component('activities', {
      return  new Date(seconds*1000)
  },
  hitDismiss(){
-  
-      dismiss = !dismiss
-      console.log("you hit dismiss is: " + dismiss)
-    
-    
+    this.dismiss = false;
    }
  }
 
