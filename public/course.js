@@ -22,6 +22,9 @@ Vue.component("coursecard", {
                       <a class="button is-danger" v-on:click="gotoVideos(id_)">
                           <strong>Enroll</strong>
                       </a>
+                      <a class="button is-danger" v-on:click="gotoVideo(id_)">
+                          <strong>Videos</strong>
+                      </a>
                       
                     </div>
                   </div>
@@ -36,6 +39,9 @@ Vue.component("coursecard", {
   methods : {
     gotoVideos: function(id_) {
       window.location.pathname = "course-enrolled/" + id_;
+    },
+    gotoVideo: function(id_) {
+      window.location.pathname = "videos/" + id_;
     }
   }
 })
