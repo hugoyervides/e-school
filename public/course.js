@@ -1,5 +1,5 @@
 Vue.component("coursecard", {
-  props: ['name', 'img', 'author_img', 'description', 'author_name', 'author_title'],
+  props: ['name', 'img', 'author_img', 'description', 'author_name', 'author_title', 'id_'],
   template: `
             <div class="tile is-ancestor is-vertical">
               <h1 class="title tile">{{ name }}</h1>
@@ -19,8 +19,8 @@ Vue.component("coursecard", {
                         <span> <b> {{ author_name }} </b> </span>
                         <span>{{ author_title }}</span>
                       </div>
-                      <a class="button is-primary">
-                          <strong>Enroll</strong>
+                      <a class="button is-danger" v-on:click="gotoVideos(id_)">
+                          <strong>Videos</strong>
                       </a>
                     </div>
                   </div>
@@ -31,7 +31,12 @@ Vue.component("coursecard", {
                     </figure>
                 </div>
               </div>
-            </div>`
+            </div>`,
+  methods : {
+    gotoVideos: function(id_) {
+      window.location.pathname = "videos/" + id_;
+    }
+  }
 })
 
 Vue.component("coursereview", {
