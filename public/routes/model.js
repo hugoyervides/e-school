@@ -51,7 +51,7 @@ router.post("/users", (req, res, next)=>{
       let newUser = {
         "name": req.body.name,
         "email": req.body.email,
-        "admin_id": req.body.admin,
+        "admin_id": "obedgm@gmail.com",
         "password": hash
       }
 
