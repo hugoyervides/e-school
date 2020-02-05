@@ -45,6 +45,7 @@ new Vue({
       })
       .then(resJSON => {
         vm.videos = resJSON.lessons;
+        console.log(vm.videos);
       }) 
       .catch(err => {
           vm.answer = err;
