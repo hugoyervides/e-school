@@ -207,6 +207,7 @@ router.get("/course/:id", (req, res, next) => {
         querySnapshot.forEach(function(doc) {
           if (doc.id ==  id_) {
             course = doc.data()
+            course.id = id_;
           }
         });
         return res.status(200).json({course: course});
