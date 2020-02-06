@@ -6,10 +6,11 @@ Vue.component('videoviewer',{
         description: String,
     },
     template : `
-            <div class="card tile">
+          <div class="column is-one-third">
+            <div class="card">
                 <div class="card-image">
                 <figure>
-                    <iframe width="440" height="255" v-bind:src="resource" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    <iframe width="100%" height="250px" v-bind:src="resource" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                 </figure>
                 </div>
                 <div class="card-content">
@@ -24,6 +25,7 @@ Vue.component('videoviewer',{
                 </div>
                 </div>
             </div>
+          </div>
     `
 });
 new Vue({
