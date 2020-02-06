@@ -19,7 +19,7 @@ var appVideos = new Vue({
 Vue.component('activities', {
 
   props: [
-    "activity_title", "author", "description", "due"
+    "activity_title", "author", "description", "due", "resource"
   ],
   template: `
        <section>
@@ -29,12 +29,16 @@ Vue.component('activities', {
           <p class="card-header-title">
           {{ activity_title }}</p>
           </header>
+            <div class="card-image">
+                <figure>
+                    <iframe width="100%" height="250px" v-bind:src="resource" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </figure>
+                </div>
               <div class="card-content">
               <div class="content">
                <p >{{ author }}</p>
               <p>{{ description }}</p>
               <p>{{convert(due._seconds, due._nanoseconds)}}</p> 
-              
               </div>
               </div>
            
@@ -70,7 +74,8 @@ new Vue({
     todos: []
   },
   created: function () {
-    var url = "../api" + window.location.pathname
+    console.log(window.location.pathname);
+    var url = "../api/videos/" + window.location.pathname.split("/")[2]
     var vm = this
     fetch(url)
       .then(res => {
@@ -80,8 +85,7 @@ new Vue({
         throw new Error(res.statusText);
       })
       .then(resJSON => {
-        vm.todos = resJSON.courses;
-        console.log(vm.todos)
+        vm.todos = resJSON.lessons;
       })
       .catch(err => {
         vm.answer = err;

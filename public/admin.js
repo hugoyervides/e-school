@@ -207,6 +207,37 @@ Vue.component('ComponentD',{
   template:"<h4>Cursos</h4>"
 })
 
+Vue.component('videoviewer',{
+  props: {
+      resource: String,
+      activity_title: String,
+      type: String,
+      description: String,
+  },
+  template : `
+        <div class="column is-one-third">
+          <div class="card">
+              <div class="card-image">
+              <figure>
+                  <iframe width="100%" height="250px" v-bind:src="resource" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              </figure>
+              </div>
+              <div class="card-content">
+              <div class="media">
+                  <div class="media-content">
+                  <p class="title is-4">{{ activity_title }}</p>
+                  <p class="subtitle is-6">{{ type }}</p>
+                  </div>
+              </div>
+              <div class="content">
+                  {{ description }}
+              </div>
+              </div>
+          </div>
+        </div>
+  `
+});
+
 Vue.component('ComponentE',{
   template:
   `
@@ -252,6 +283,33 @@ Vue.component('ComponentE',{
     </div>
   </div>
 
+  <h1 class="title">Videos</h1>
+    <div class="columns is-multiline is-desktop">
+      <videoviewer 
+        v-for = "video in videos"
+        v-bind:resource = "video.resource"
+        v-bind:activity_title = "video.activity_title"
+        v-bind:type = "video.course"
+        v-bind:description = "video.description">
+      </videoviewer>
+    </div>
+  <div>
+    <div class="field">
+      <p class="control">
+        <input class="input" type="text" placeholder="Resource URL" v-model="videoResourceURL">
+      </p>
+      <p class="control">
+        <input class="input" type="text" placeholder="Title" v-model="videoTitle">
+      </p>
+      <p class="control">
+        <input class="input" type="text" placeholder="Description" v-model="videoDescription">
+      </p>
+      <a class="button is-primary" v-on:click="addVideo()">
+        Add Video
+      </a>
+    </div>
+  </div>
+
   <button class="button is-primary" v-on:click="postCourse()">Agregar curso</button>
   </div>`,
   data: function(){
@@ -259,11 +317,28 @@ Vue.component('ComponentE',{
       name: "",
       description: "",
       image: "",
-      author: ""
+      author: "",
+      videoResourceURL: "",
+      videoTitle: "",
+      videoDescription: "",
+      videos: []
     }
   },
   methods: {
+    addVideo: function() {
+      this.videos.push(
+        {
+          resource: this.videoResourceURL,
+          activity_title: this.videoTitle,
+          description: this.videoDescription
+        }
+      );
+      this.videoResourceURL = "";
+      this.videoTitle = "";
+      this.videoDescription = "";
+    },
     postCourse: function(){
+      var vm = this;
       axios.post('/api/course',{
         name: this.name,
         description: this.description,
@@ -271,14 +346,37 @@ Vue.component('ComponentE',{
         author: this.author,
         reviews: ""
       }).then((response) =>{
+        this.videos.forEach(video => {
+          var data = JSON.stringify({
+            courseID: response.data.course.id,
+            title: video.title,
+            resource: video.resourceURL,
+            description: video.description
+          });
+          fetch("/api/course/lesson", {
+            method: "POST",
+            body: data,
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }).then(res => {
+            if (res.ok) {
+              console.error("Video added to course.");
+            } else {
+              throw new Error(res.statusText);
+            }
+          }).catch(err => {
+            console.error(err);
+          });
+        });
         alert("Curso agregado correctamente");
         document.getElementById('name-input').value = "";
         document.getElementById('description-input').value = "";
         document.getElementById('link-input').value = "";
-        document.getElementById('author-input').value = "";
-      }, (error) => {
+        document.getElementById('author-input').value = ""; 
+      }).catch((error) => {
         console.log(error)
-      })
+      });
     }
   }
 })

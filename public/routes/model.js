@@ -180,11 +180,10 @@ router.post("/course", (req, res, next) => {
       "reviews": req.body.reviews,
       "admin_id": "obedgm@gmail.com"
     }
-    let setNewCourse = coursesCollection.doc(String(docId)).set(newCourse);
+    coursesCollection.doc(String(docId)).set(newCourse);
+    newCourse.id = docId;
 
-    res.json({
-      "Message": "Course successfully created"
-    })
+    return res.status(200).json({course: newCourse});
   }else{
     res.json({
       "Message": "Missing params in body."
@@ -431,28 +430,26 @@ router.get("/course-enrolled/:id", (req, res, next) =>{
 })
 
 
-router.post("course/lesson", (req,res, next)=>{
-  if (req.body.courseID !=null && req.body.title !=null && req.body.decription != null && req.body.author != null && req.body.resource != null && req.body.due != null) {
+router.post("/course/lesson", (req,res, next)=>{
+  if (req.body.courseID !=null && req.body.title !=null && req.body.description != null && req.body.resource != null) {
     let lessonID = Math.floor(Math.random() * (99999 - 00000));
     let newLesson = {
       "courseID": req.body.courseID,
-      "activity_title": req.body.activity_title,
-      "type": req.body.type,
+      "activity_title": req.body.title,
       "description": req.body.description,
-      "author": req.body.author,
       "resource": req.body.resource,
-      "due": req.body.due
     }
-
-  lessonsCollection.doc(String(lessonID)).set(newLesson);
-  res.json({
-    "Message": "Lesson successfully created"
-  })
+    console.log(newLesson);
+    lessonsCollection.doc(String(lessonID)).set(newLesson);
+    return res.status(200).json({
+      "Message": "Lesson successfully created"
+    });
 }
 else{
-  res.json({
+  console.error(req.body);
+  return res.status(408).json({
     "Message": "Lesson params in body."
-  })
+  });
 }
 
 })
