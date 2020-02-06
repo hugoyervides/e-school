@@ -42,7 +42,7 @@ var navcomponent = Vue.component('navcomponent',{
     data: function() { return {
       user: {},
       loggedIn: false,
-      logo: "./static/img/google.png",
+      logo: "/static/img/google.png",
       navbarItems: [
         {text: "Home", goto: "/" },
         {text: "Courses", goto: "/search" },
