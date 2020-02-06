@@ -19,12 +19,6 @@ Vue.component("coursecard", {
                         <span> <b> {{ author_name }} </b> </span>
                         <span>{{ author_title }}</span>
                       </div>
-                      <a class="button is-danger" v-on:click="gotoVideos(id_)">
-                          <strong>Enroll</strong>
-                      </a>
-                      <a class="button is-danger" v-on:click="gotoVideo(id_)">
-                          <strong>Videos</strong>
-                      </a>
                       
                     </div>
                   </div>

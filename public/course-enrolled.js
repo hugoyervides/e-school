@@ -6,6 +6,15 @@ var appCompanyTitle = new Vue({
   }
 });
 
+var appVideos = new Vue({
+  el: "#videosApp",
+  methods: {
+    gotoVideo: function(id_) {
+      window.location.pathname = "videos/" + window.location.pathname.split("/")[2];
+    }
+  }
+})
+
 
 Vue.component('activities', {
 
