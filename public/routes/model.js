@@ -196,7 +196,7 @@ function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-router.post("/courses", (req, res, next) => {
+router.post("/featured-courses", (req, res, next) => {
   if (!req.body.query) {
     coursesCollection
       .get()
@@ -236,6 +236,142 @@ router.post("/courses", (req, res, next) => {
       .catch(function(error) {
           res.status(500).json({message: "Error getting documents: " + error});
       });
+  }
+})
+
+router.post("/courses", (req, res, next) => {
+  sess = req.session;
+  if (sess.email) {
+    userCollection.where('email', '==', sess.email).get().then(sn => {
+      if (!sn.empty) {
+        sn.forEach(doc => {
+          var user = doc.data();
+          var userCourses = user.courses || [];
+          if (!req.body.query) {
+            coursesCollection
+              .get()
+              .then(function(querySnapshot) {
+                var courses = []
+                querySnapshot.forEach(function(doc) {
+                  var course = doc.data();
+                  if (course.name != null && userCourses.includes(doc.id)) {
+                    course.id = doc.id;
+                    courses.push(course);
+                  }
+                });
+                return res.status(200).json({courses: courses})
+              })
+              .catch(function(error) {
+                  res.status(500).json({message: "Error getting documents: " + error});
+              });
+          } else {
+            coursesCollection
+              .get()
+              .then(function(querySnapshot) {
+                var courses = []
+                var keywords = req.body.query.split(" ");
+                querySnapshot.forEach(function(doc) {
+                  var course = doc.data();
+                  if (course.name != null && userCourses.includes(doc.id)) {
+                    keywords.forEach(function(word) {
+                      if (course.name.toLowerCase().includes(word.toLowerCase())) {
+                        course.id = doc.id;
+                        courses.push(course);
+                      }
+                    });
+                  }
+                });
+                return res.status(200).json({courses: courses.filter(onlyUnique)})
+              })
+              .catch(function(error) {
+                  res.status(500).json({message: "Error getting documents: " + error});
+              });
+          }
+        });
+      } else {
+        if (!req.body.query) {
+          coursesCollection
+            .get()
+            .then(function(querySnapshot) {
+              var courses = []
+              querySnapshot.forEach(function(doc) {
+                var course = doc.data();
+                if (course.name != null) {
+                  course.id = doc.id;
+                  courses.push(course);
+                }
+              });
+              return res.status(200).json({courses: courses})
+            })
+            .catch(function(error) {
+                res.status(500).json({message: "Error getting documents: " + error});
+            });
+        } else {
+          coursesCollection
+            .get()
+            .then(function(querySnapshot) {
+              var courses = []
+              var keywords = req.body.query.split(" ");
+              querySnapshot.forEach(function(doc) {
+                var course = doc.data();
+                if (course.name != null) {
+                  keywords.forEach(function(word) {
+                    if (course.name.toLowerCase().includes(word.toLowerCase())) {
+                      course.id = doc.id;
+                      courses.push(course);
+                    }
+                  });
+                }
+              });
+              return res.status(200).json({courses: courses.filter(onlyUnique)})
+            })
+            .catch(function(error) {
+                res.status(500).json({message: "Error getting documents: " + error});
+            });
+        }
+      }
+    })
+  } else {
+    if (!req.body.query) {
+      coursesCollection
+        .get()
+        .then(function(querySnapshot) {
+          var courses = []
+          querySnapshot.forEach(function(doc) {
+            var course = doc.data();
+            if (course.name != null) {
+              course.id = doc.id;
+              courses.push(course);
+            }
+          });
+          return res.status(200).json({courses: courses})
+        })
+        .catch(function(error) {
+            res.status(500).json({message: "Error getting documents: " + error});
+        });
+    } else {
+      coursesCollection
+        .get()
+        .then(function(querySnapshot) {
+          var courses = []
+          var keywords = req.body.query.split(" ");
+          querySnapshot.forEach(function(doc) {
+            var course = doc.data();
+            if (course.name != null) {
+              keywords.forEach(function(word) {
+                if (course.name.toLowerCase().includes(word.toLowerCase())) {
+                  course.id = doc.id;
+                  courses.push(course);
+                }
+              });
+            }
+          });
+          return res.status(200).json({courses: courses.filter(onlyUnique)})
+        })
+        .catch(function(error) {
+            res.status(500).json({message: "Error getting documents: " + error});
+        });
+    }
   }
 })
 
@@ -321,9 +457,33 @@ else{
 
 })
 
+router.post("/user-enrolled/:id", (req, res, next) => {
+  var id_ = req.params.id
+  var email = JSON.parse(req.body.body).email;
+  userCollection.where('email', '==', email).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        console.log('No matching documents.');
+        return res.status(200).json({user: {}});
+      }
+
+      var enrolled = false;
+      snapshot.forEach(doc => {
+        if (doc.id == sess.user_id) {
+          var courses = doc.data().courses;
+          if (courses.includes(id_)) {
+            enrolled = true;
+          } 
+        }
+      });
+      return res.status(200).json({enrolled: enrolled});
+    }).catch(err => {
+      return res.status(200).json({enrolled: false});
+    });
+});
+
 router.get("/users/login", (req, res, next) => {
   sess = req.session;
-  console.log(sess.email);
   if (!sess.email) {
     return res.status(200).json({user: {}});
   }

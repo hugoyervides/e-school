@@ -51,7 +51,7 @@ var appFeaturedCourses = new Vue({
     ]
   },
   created: function() {
-    var url = "api/courses";
+    var url = "api/featured-courses";
       var vm = this
       fetch(url, {
         method: 'POST',

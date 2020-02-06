@@ -5,7 +5,9 @@ const bodyParser = require("body-parser")
 const app = express();
 const axios = require('axios');
 
-const model = require("./public/routes/model");
+let model = require("./public/routes/model");
+
+const request = require('request');
 
 app.use('/static', express.static('public'));
 
@@ -30,7 +32,41 @@ app.get('/search', (req, res) => {
   return res.sendFile("search.html", {root: "public"})
 });
 app.get('/course/:id', (req, res) => {
-  return res.sendFile("course.html", {root: "public"})
+  sess = req.session;
+  var requestURL = req.protocol + '://' + req.get('host') + "/api/user-enrolled/" + req.params.id;
+  var vm = this;
+  if (sess) {
+    this.data = JSON.stringify({
+      email: sess.email
+    });
+    console.log(vm.data);
+    axios.post(requestURL, {
+      method: "POST",
+      body: vm.data,
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.status == 200) {
+        return response.data;
+      }
+      throw new Error(response.statusText);
+    })
+    .then(resJSON => {
+      console.log(resJSON);
+      if (resJSON.enrolled) {
+        console.log(resJSON.enrolled);
+        return res.sendFile("course-enrolled.html", {root: "public"});
+      } else {
+        console.log(resJSON.enrolled);
+        return res.sendFile("course.html", {root: "public"});
+      }
+    })
+    .catch(error => {
+      return res.sendFile("course.html", {root: "public"});
+    });
+  }
 });
 
 app.get('/admin', (req, res) => {

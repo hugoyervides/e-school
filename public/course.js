@@ -66,14 +66,14 @@ var courseApp = new Vue({
         reviewsTitle: "Reviews",
         course: {
             id: 1,
-            name: "abc",
-            img: "abc",
+            name: "",
+            img: "",
             author: {
-                img: "def",
-                title: "def",
-                name: "fghi"
+                img: "",
+                title: "",
+                name: ""
             },
-            description: "jkl"
+            description: ""
         }
     },
     created: function () {
