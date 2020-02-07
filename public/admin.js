@@ -6,53 +6,6 @@ var adminUserTitle = new Vue({
   }
 });
 
-Vue.component('navcomponent',{
-  template : `<nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item">
-        <img v-bind:src="logo" width="auto">
-      </a>
-
-      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-    <div id="navbarBasicExample" class="navbar-menu">
-      <div class="navbar-start">
-        <a v-for="item in navbarItems" class="navbar-item">
-          {{ item.text }}
-        </a>
-        </div>
-      </div>
-
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <a class="button is-primary">
-              <strong>{{ signup }}</strong>
-            </a>
-            <a class="button is-light">
-              {{ login }}
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>`,
-  data: function() { return {
-    logo: "./static/img/google.png",
-    navbarItems: [
-      {text: "Home" },
-      {text: "Courses" },
-    ],
-    signup: "Sign Up",
-    login: "Log In"
-    }
-  }
-});
-
 Vue.component('ComponentA',{
   template:"<h4>Perfil del admin</h4>"
 })
@@ -310,7 +263,9 @@ Vue.component('ComponentE',{
     </div>
   </div>
 
-  <button class="button is-primary" v-on:click="postCourse()">Agregar curso</button>
+  <div class="container">
+    <button class="button is-danger" v-on:click="postCourse()">Agregar curso</button>
+  </div>
   </div>`,
   data: function(){
     return{
@@ -326,6 +281,10 @@ Vue.component('ComponentE',{
   },
   methods: {
     addVideo: function() {
+      if (!this.videoResourceURL || !this.videoTitle || this.videoDescription) {
+        alert("Fill all fields for the video.");
+        return;
+      }
       this.videos.push(
         {
           resource: this.videoResourceURL,
@@ -389,23 +348,132 @@ Vue.component('ComponentF',{
           <tr>
             <th>Course ID</th>
             <th>Name</th>
+            <th>Users</th>
           </tr>
         </thead>
         <tfoot>
           <tr>
             <th>Course ID</th>
             <th>Name</th>
+            <th>Users</th>
           </tr>
         </tfoot>
         <tbody>
           <tr v-for="course in courses">
               <td>{{ course.id }}</td>
               <td>{{ course.name }}</td>
-              <td><a class="delete"></a></td>
+              <td>
+                <input :list="'data_' + course.id" name="users" :id="'inputlist_'+course.id">
+                <datalist :id="'data_' + course.id">
+                  <div v-for="member in course.members">
+                    <option :value="member"></option>
+                  </div>
+                </datalist>
+                <a class="button is-danger" v-on:click="removeUser('inputlist_'+course.id, course.id)">Remove</a>
+              </td>
+              <td><a class="delete" v-on:click="deleteCourse(course.id)"></a></td>
           </tr>
         </tbody>
       </table>
     </div>`,
+  methods: {
+    removeUser: function(input_id, course_id) {
+      var vm = this
+      var user = $("#" + input_id).val();
+      var data = {
+        userID: user,
+        course: course_id 
+      };
+      var url = "/api/unenroll";
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error(res.statusText);
+        }
+      }).then(resJSON => {
+          alert(resJSON.message);
+          var url = "/api/courses"
+          fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+              query: ""
+            }),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }).then(res => {
+            if (res.ok) {
+              return res.json();
+            }
+            throw new Error(res.statusText);
+          }).then(resJSON => {
+            vm.courses = resJSON.courses;
+          }).catch(err => {
+            console.error(err);
+          });
+      }).catch(err => {
+        alert(err);
+      });
+    },
+    deleteCourse: function(id_) {
+      var url = "/api/course/" + id_;
+      fetch(url, {
+        method: "DELETE"
+      }).then(res => {
+        if (res.ok) {
+          alert("Course deleted successfully.");
+          var url = "/api/courses"
+          var vm = this
+          fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+              query: ""
+            }),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }).then(res => {
+            if (res.ok) {
+              return res.json();
+            }
+            throw new Error(res.statusText);
+          }).then(resJSON => {
+            var url = "/api/courses"
+            var vm = this
+            fetch(url, {
+              method: "POST",
+              body: JSON.stringify({
+                query: ""
+              }),
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }).then(res => {
+              if (res.ok) {
+                return res.json();
+              }
+              throw new Error(res.statusText);
+            }).then(resJSON => {
+              vm.courses = resJSON.courses;
+            }).catch(err => {
+              console.error(err);
+            });
+          }).catch(err => {
+            console.error(err);
+          });
+        }
+      }).catch(err_ => {
+        console.error(err_);
+      });
+    }
+  },
   data: function() { return {
     courses: []
   }},
@@ -447,7 +515,11 @@ Vue.component('ComponentG',{
     </div>
     <div class="field">
       <p class="control has-icons-left has-icons-right">
-        <input class="input" type="email" placeholder="CourseID" v-model="course">
+        <select v-model="course">
+          <option 
+            v-for="curso in courses"
+            v-bind:value="curso.id">{{ curso.name }}</option>
+        </select> 
       </p>
     </div>
     <button class="button is-success" v-on:click="enroll()">Enroll</button>
@@ -456,7 +528,8 @@ Vue.component('ComponentG',{
   data: function() { return {
     username: "",
     course: "",
-    message: ""
+    message: "",
+    courses: []
   }},
   methods: {
     enroll: function() {
@@ -491,12 +564,30 @@ Vue.component('ComponentG',{
         vm.message = err;
       });
     }
+  },
+  created: function() {
+    var url = "/api/courses"
+    var vm = this
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        query: ""
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      throw new Error(res.statusText);
+    }).then(resJSON => {
+      vm.courses = resJSON.courses;
+    }).catch(err => {
+      console.error(err);
+    });
   }
 })
-
-var navbarApp = new Vue({
-  el: '#appNavBar'
-});
 
 Vue.component('menucomponent',{
   template: `<aside class="menu">

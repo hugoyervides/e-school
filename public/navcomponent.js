@@ -62,7 +62,10 @@ var navcomponent = Vue.component('navcomponent',{
         throw new Error(res.json().message);
       })
       .then(resJSON => {
-        if (resJSON.user && resJSON.user.name) {
+        if (resJSON.user && resJSON.user.email) {
+          if (!resJSON.user.name) {
+            resJSON.user.name = resJSON.user.email;
+          }
           vm.loginUser(resJSON.user);
         }
       })
@@ -76,6 +79,7 @@ var navcomponent = Vue.component('navcomponent',{
           .then(res => {
             this.loggedIn = false;
             this.user = {};
+            window.location.href = window.location.href;
           })
           .catch(err=> {
             console.error(err);

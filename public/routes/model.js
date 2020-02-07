@@ -40,6 +40,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const userCollection = db.collection("users");
+const adminCollection = db.collection("admin");
 const coursesCollection = db.collection("course");
 const lessonsCollection = db.collection("lesson");
 const messageCollection = db.collection("messages");
@@ -141,6 +142,9 @@ router.post("/enroll", (req, res, next) => {
           if (docData.exists) {
             newCourses.push(req.body.course);
             usersRef.doc(doc.id).update({courses: newCourses.filter(onlyUnique)});
+            var courseMembers = docData.data().members || [];
+            courseMembers.push(doc.id);
+            coursesCollection.doc(req.body.course).update({members: courseMembers.filter(onlyUnique)});
             return res.status(200).json("Enrolled user to course successfully.");
           } else {
             res.statusMessage = "Course not found.";
@@ -154,6 +158,38 @@ router.post("/enroll", (req, res, next) => {
     }).catch(err => {
       res.statusMessage = err;
       res.status(500).json(err);
+    });
+})
+
+router.post("/unenroll", (req, res, next) => {
+  let usersRef = db.collection('users');
+  usersRef.doc(req.body.userID).get()
+    .then(doc => {
+      let user = doc.data();
+        var newCourses = [];
+        if (user.courses) {
+          newCourses = user.courses;
+        }
+
+        coursesCollection.doc(req.body.course).get().then((docData) => {
+          if (docData.exists) {
+            newCourses.splice(newCourses.indexOf(req.body.course), 1);
+            usersRef.doc(doc.id).update({courses: newCourses.filter(onlyUnique)});
+            var courseMembers = docData.data().members || [];
+            courseMembers.splice(courseMembers.indexOf(doc.id), 1);
+            coursesCollection.doc(req.body.course).update({members: courseMembers.filter(onlyUnique)});
+            return res.status(200).json({message: "Unenrolled user to course successfully."});
+          } else {
+            res.statusMessage = "Course not found.";
+            return res.status(404).json("Course not found.");
+          }
+        }).catch((fail) => {
+          res.statusMessage = fail;
+          res.status(500).json(fail);
+        });
+    }).catch(err => {
+      res.statusMessage = "User not found.";
+      res.status(500).json("User not found");
     });
 })
 
@@ -194,49 +230,6 @@ router.post("/course", (req, res, next) => {
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
-
-router.post("/featured-courses", (req, res, next) => {
-  if (!req.body.query) {
-    coursesCollection
-      .get()
-      .then(function(querySnapshot) {
-        var courses = []
-        querySnapshot.forEach(function(doc) {
-          var course = doc.data();
-          if (course.name != null) {
-            course.id = doc.id;
-            courses.push(course);
-          }
-        });
-        return res.status(200).json({courses: courses})
-      })
-      .catch(function(error) {
-          res.status(500).json({message: "Error getting documents: " + error});
-      });
-  } else {
-    coursesCollection
-      .get()
-      .then(function(querySnapshot) {
-        var courses = []
-        var keywords = req.body.query.split(" ");
-        querySnapshot.forEach(function(doc) {
-          var course = doc.data();
-          if (course.name != null) {
-            keywords.forEach(function(word) {
-              if (course.name.toLowerCase().includes(word.toLowerCase())) {
-                course.id = doc.id;
-                courses.push(course);
-              }
-            });
-          }
-        });
-        return res.status(200).json({courses: courses.filter(onlyUnique)})
-      })
-      .catch(function(error) {
-          res.status(500).json({message: "Error getting documents: " + error});
-      });
-  }
-})
 
 router.post("/courses", (req, res, next) => {
   sess = req.session;
@@ -374,6 +367,54 @@ router.post("/courses", (req, res, next) => {
   }
 })
 
+router.post("/featured-courses", (req, res, next) => {
+  sess = req.session;
+  coursesCollection.orderBy('members', 'desc').limit(3)
+    .get()
+    .then(function(querySnapshot) {
+      var courses = []
+      querySnapshot.forEach(function(doc) {
+        var course = doc.data();
+        if (course.name != null) {
+          course.id = doc.id;
+          courses.push(course);
+        }
+      });
+      return res.status(200).json({courses: courses})
+    })
+    .catch(function(error) {
+      console.log(error);
+        res.status(500).json({message: "Error getting documents: " + error});
+    });
+})
+
+router.delete("/course/:id", (req, res, next) => {
+  coursesCollection.doc(req.params.id).delete();
+  coursesCollection.doc(req.params.id).get().then((docData) => {
+    res.statusMessage = "Course wasn't deleted."
+    return res.status(500).json(err);
+  }).catch(err=> {
+    userCollection.get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let user = doc.data();
+          var newCourses = [];
+          if (user.courses) {
+            newCourses = user.courses;
+          }
+          newCourses.splice(newCourses.indexOf(req.params.id), 1);
+          console.error({courses: newCourses});
+          userCollection.doc(doc.id).update({courses: newCourses});
+        });
+        return res.status(200).json({message: "Course deleted successfully!"});
+      }).catch(error => {
+        console.error(error);
+        res.statusMessage = "Course wasn't deleted from users."
+        return res.status(500).json(error);
+      });
+  });
+});
+
 router.get("/course/:id", (req, res, next) => {
   let id_ = +req.params.id;
   coursesCollection
@@ -487,20 +528,65 @@ router.get("/users/login", (req, res, next) => {
   userCollection.where('email', '==', sess.email).get()
     .then(snapshot => {
       if (snapshot.empty) {
-        console.log('No matching documents.');
-        return res.status(200).json({user: {}});
+        adminCollection.where('email', '==', sess.email).get().then(snap => {
+          if (snap.empty) {
+            return res.status(200).json({user: {}});
+          }
+          snap.forEach(d => {
+            var adminUser = d.data();
+            return res.status(200).json({user: adminUser});
+          });
+        });
+      } else {
+        var user = {}
+        snapshot.forEach(doc => {
+          if (doc.id == sess.user_id) {
+            user = doc.data();
+          }
+        });
+        return res.status(200).json({user: user});
       }
-
-      var user = {}
-      snapshot.forEach(doc => {
-        if (doc.id == sess.user_id) {
-          user = doc.data();
-        }
-      });
-      return res.status(200).json({user: user});
     }).catch(err => {
       console.error(err);
       res.status(500).json({message: err});
+    })
+});
+
+router.post( "/admin/login", ( req, res, next ) => {
+  let email = req.body.email;
+  let pass = req.body.password;
+
+	if ( !email && !pass ){
+		res.statusMessage = "Missing 'email' field in params!";
+		return res.status( 406 ).json({
+			message : "Missing 'email' field in params!",
+			status : 406
+		});
+  }
+
+  adminCollection.where('email', '==', email).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        res.statusMessage = 'Admin not found.';
+        return res.status(404).json("No matching documents");
+      }
+
+      snapshot.forEach(doc => {
+        var user = doc.data();
+        if (user.password == pass) {
+          sess = req.session;
+          sess.admin = true;
+          sess.email = email;
+          sess.user_id = doc.id;
+          user.password = "";
+
+          return res.status(200).json( user );
+        } else {
+          return res.status(401).json("Incorrect password.");
+        }
+      });
+    }).catch(err => {
+      return res.status(500).json({message: err});
     })
 });
 
