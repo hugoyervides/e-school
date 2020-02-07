@@ -40,6 +40,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const userCollection = db.collection("users");
+const adminCollection = db.collection("admin");
 const coursesCollection = db.collection("course");
 const lessonsCollection = db.collection("lesson");
 const messageCollection = db.collection("messages");
@@ -487,20 +488,65 @@ router.get("/users/login", (req, res, next) => {
   userCollection.where('email', '==', sess.email).get()
     .then(snapshot => {
       if (snapshot.empty) {
-        console.log('No matching documents.');
-        return res.status(200).json({user: {}});
+        adminCollection.where('email', '==', sess.email).get().then(snap => {
+          if (snap.empty) {
+            return res.status(200).json({user: {}});
+          }
+          snap.forEach(d => {
+            var adminUser = d.data();
+            return res.status(200).json({user: adminUser});
+          });
+        });
+      } else {
+        var user = {}
+        snapshot.forEach(doc => {
+          if (doc.id == sess.user_id) {
+            user = doc.data();
+          }
+        });
+        return res.status(200).json({user: user});
       }
-
-      var user = {}
-      snapshot.forEach(doc => {
-        if (doc.id == sess.user_id) {
-          user = doc.data();
-        }
-      });
-      return res.status(200).json({user: user});
     }).catch(err => {
       console.error(err);
       res.status(500).json({message: err});
+    })
+});
+
+router.post( "/admin/login", ( req, res, next ) => {
+  let email = req.body.email;
+  let pass = req.body.password;
+
+	if ( !email && !pass ){
+		res.statusMessage = "Missing 'email' field in params!";
+		return res.status( 406 ).json({
+			message : "Missing 'email' field in params!",
+			status : 406
+		});
+  }
+
+  adminCollection.where('email', '==', email).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        res.statusMessage = 'Admin not found.';
+        return res.status(404).json("No matching documents");
+      }
+
+      snapshot.forEach(doc => {
+        var user = doc.data();
+        if (user.password == pass) {
+          sess = req.session;
+          sess.admin = true;
+          sess.email = email;
+          sess.user_id = doc.id;
+          user.password = "";
+
+          return res.status(200).json( user );
+        } else {
+          return res.status(401).json("Incorrect password.");
+        }
+      });
+    }).catch(err => {
+      return res.status(500).json({message: err});
     })
 });
 

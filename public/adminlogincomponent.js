@@ -4,7 +4,7 @@ var logincomponent = Vue.component("logincomponent", {
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Log In</p>
+        <p class="modal-card-title">Admin Log In</p>
         <button class="delete" aria-label="close" id="close-modal" v-on:click="closeModal()"></button>
       </header>
       <section class="modal-card-body">
@@ -42,13 +42,15 @@ var logincomponent = Vue.component("logincomponent", {
         password: ""
       }
     },
+    created: function() {
+    },
     methods: {
       closeModal: function() {
-        $(".modal").toggleClass("is-active");
+        //$(".modal").toggleClass("is-active");
       },
       login: function() {
         var vm = this;
-        fetch("api/users/login", {
+        fetch("api/admin/login", {
           headers:{
             'Content-Type': 'application/json'
           },
@@ -59,13 +61,12 @@ var logincomponent = Vue.component("logincomponent", {
           })
         }).then(res => {
           if (res.ok) {
-            $(".modal").toggleClass("is-active");
             return res.json();
           }
           throw new Error(res.statusText);
         }).then(resJSON => {
-          navbarApp.logIn(resJSON);
-          window.location.href = window.location.href;
+          //navbarApp.logIn(resJSON);
+          window.location.href = "/admin";
         }).catch(err => {
           vm.message = err;
         })  
@@ -84,7 +85,8 @@ var logincomponent = Vue.component("logincomponent", {
           })
         }).then(res => {
           if (res.ok) {
-            $(".modal").toggleClass("is-active");
+            //$(".modal").toggleClass("is-active");
+            window.location.href = "/admin";
             return res.json();
           }
           throw new Error(res.statusText);

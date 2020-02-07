@@ -70,7 +70,12 @@ app.get('/course/:id', (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-  return res.sendFile("admin.html", {root:"public"});
+  if (req.session) {
+    if (req.session.admin) {
+      return res.sendFile("admin.html", {root:"public"});
+    }
+  }
+  return res.sendFile("admin-login.html", {root:"public"});
 });
 
 app.get('/course-enrolled/:id', (req, res) => {

@@ -117,7 +117,7 @@ var courseApp = new Vue({
 })
 
 Vue.component("relatedcourse", {
-  props: ['name', 'img', 'author_img', 'description', 'author_name', 'author_title'],
+  props: ['name', 'img', 'author_img', 'description', 'author_name', 'author_title', 'id_'],
   template: `
               <div class="card tile">
                 <div class="card-image tile is-6">
@@ -129,11 +129,16 @@ Vue.component("relatedcourse", {
                   <div class="media">
                     <div class="media-content">
                       <h1 class="title">{{ name }}</h1>
-                      <a class="button is-primary">
+                      <a class="button is-primary" v-on:click="gotoCourse(id_)">
                           <strong>Enroll</strong>
                       </a>
                     </div>
                   </div>
                 </div>
-              </div>`
+              </div>`,
+  methods : {
+    gotoCourse: function(id_) {
+      window.location.pathname = "course/" + id_;
+    }
+  }
 })
