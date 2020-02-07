@@ -142,6 +142,9 @@ router.post("/enroll", (req, res, next) => {
           if (docData.exists) {
             newCourses.push(req.body.course);
             usersRef.doc(doc.id).update({courses: newCourses.filter(onlyUnique)});
+            var courseMembers = docData.data().members || [];
+            courseMembers.push(doc.id);
+            coursesCollection.doc(req.body.course).update({members: courseMembers.filter(onlyUnique)});
             return res.status(200).json("Enrolled user to course successfully.");
           } else {
             res.statusMessage = "Course not found.";
@@ -195,49 +198,6 @@ router.post("/course", (req, res, next) => {
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
-
-router.post("/featured-courses", (req, res, next) => {
-  if (!req.body.query) {
-    coursesCollection
-      .get()
-      .then(function(querySnapshot) {
-        var courses = []
-        querySnapshot.forEach(function(doc) {
-          var course = doc.data();
-          if (course.name != null) {
-            course.id = doc.id;
-            courses.push(course);
-          }
-        });
-        return res.status(200).json({courses: courses})
-      })
-      .catch(function(error) {
-          res.status(500).json({message: "Error getting documents: " + error});
-      });
-  } else {
-    coursesCollection
-      .get()
-      .then(function(querySnapshot) {
-        var courses = []
-        var keywords = req.body.query.split(" ");
-        querySnapshot.forEach(function(doc) {
-          var course = doc.data();
-          if (course.name != null) {
-            keywords.forEach(function(word) {
-              if (course.name.toLowerCase().includes(word.toLowerCase())) {
-                course.id = doc.id;
-                courses.push(course);
-              }
-            });
-          }
-        });
-        return res.status(200).json({courses: courses.filter(onlyUnique)})
-      })
-      .catch(function(error) {
-          res.status(500).json({message: "Error getting documents: " + error});
-      });
-  }
-})
 
 router.post("/courses", (req, res, next) => {
   sess = req.session;
@@ -373,6 +333,27 @@ router.post("/courses", (req, res, next) => {
         });
     }
   }
+})
+
+router.post("/featured-courses", (req, res, next) => {
+  sess = req.session;
+  coursesCollection.orderBy('members', 'desc').limit(3)
+    .get()
+    .then(function(querySnapshot) {
+      var courses = []
+      querySnapshot.forEach(function(doc) {
+        var course = doc.data();
+        if (course.name != null) {
+          course.id = doc.id;
+          courses.push(course);
+        }
+      });
+      return res.status(200).json({courses: courses})
+    })
+    .catch(function(error) {
+      console.log(error);
+        res.status(500).json({message: "Error getting documents: " + error});
+    });
 })
 
 router.get("/course/:id", (req, res, next) => {
