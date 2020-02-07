@@ -19,12 +19,6 @@ Vue.component("coursecard", {
                         <span> <b> {{ author_name }} </b> </span>
                         <span>{{ author_title }}</span>
                       </div>
-                      <a class="button is-danger" v-on:click="gotoVideos(id_)">
-                          <strong>Enroll</strong>
-                      </a>
-                      <a class="button is-danger" v-on:click="gotoVideo(id_)">
-                          <strong>Videos</strong>
-                      </a>
                       
                     </div>
                   </div>
@@ -66,14 +60,14 @@ var courseApp = new Vue({
         reviewsTitle: "Reviews",
         course: {
             id: 1,
-            name: "abc",
-            img: "abc",
+            name: "",
+            img: "",
             author: {
-                img: "def",
-                title: "def",
-                name: "fghi"
+                img: "",
+                title: "",
+                name: ""
             },
-            description: "jkl"
+            description: ""
         }
     },
     created: function () {
@@ -123,7 +117,7 @@ var courseApp = new Vue({
 })
 
 Vue.component("relatedcourse", {
-  props: ['name', 'img', 'author_img', 'description', 'author_name', 'author_title'],
+  props: ['name', 'img', 'author_img', 'description', 'author_name', 'author_title', 'id_'],
   template: `
               <div class="card tile">
                 <div class="card-image tile is-6">
@@ -135,11 +129,16 @@ Vue.component("relatedcourse", {
                   <div class="media">
                     <div class="media-content">
                       <h1 class="title">{{ name }}</h1>
-                      <a class="button is-primary">
+                      <a class="button is-primary" v-on:click="gotoCourse(id_)">
                           <strong>Enroll</strong>
                       </a>
                     </div>
                   </div>
                 </div>
-              </div>`
+              </div>`,
+  methods : {
+    gotoCourse: function(id_) {
+      window.location.pathname = "course/" + id_;
+    }
+  }
 })
