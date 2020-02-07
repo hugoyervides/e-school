@@ -11,32 +11,28 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body>
-  <section class="section">
-    <div class="container">
-        <!-- Navbar -->
-        <div class="container">
+    <section class="section">
+      <div class="container">
+          <!-- Navbar -->
           <div id = "appNavBar">
-              <navcomponent></navcomponent>
-           </div>
-        </div>
-        <!-- Company Title Header -->
-        <div id="adminUserTitle">
-            <h1 class="title is-1"> Welcome {{ user }} !</h1>
-        </div>
-        <!-- Featured Courses: The most popular courses should be displayed here. -->
-    </div>
-  </section>
-  <section class="section">
-    <div class="container" style="width:20%; float:left">
-      <div id="adminMenu">
-        <menucomponent></menucomponent>
+              <navcomponent
+                v-bind:user="user"
+              ></navcomponent>
+          </div>
       </div>
-    </div>
-    <div class="container">
-      <div id="userComponent" style="width:70%; float:left">
+      <div class="container" style="width:20%; float:left; margin: 50px;">
+        <div id="adminUserTitle">
+            <h1 class="subtitle is-5"> Welcome {{ user }} !</h1><br>
+        </div>
+        <div id="adminMenu">
+          <menucomponent></menucomponent>
+        </div>
+      </div>
+      <div class="container" id="userComponent" style="width:70%; float:left">
         <component :is="current"></component>
-    </div>
-  </section>
-  <script type="text/javascript" src="./static/admin.js"></script>
+      </div>
+    </section>
+    <script type="text/javascript" src="./static/admin.js"></script>
+    <script type="text/javascript" src="./static/navcomponent.js"></script>
   </body>
 </html>
