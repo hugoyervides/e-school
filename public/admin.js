@@ -263,7 +263,9 @@ Vue.component('ComponentE',{
     </div>
   </div>
 
-  <button class="button is-primary" v-on:click="postCourse()">Agregar curso</button>
+  <div class="container">
+    <button class="button is-danger" v-on:click="postCourse()">Agregar curso</button>
+  </div>
   </div>`,
   data: function(){
     return{
@@ -279,6 +281,10 @@ Vue.component('ComponentE',{
   },
   methods: {
     addVideo: function() {
+      if (!this.videoResourceURL || !this.videoTitle || this.videoDescription) {
+        alert("Fill all fields for the video.");
+        return;
+      }
       this.videos.push(
         {
           resource: this.videoResourceURL,
@@ -342,23 +348,79 @@ Vue.component('ComponentF',{
           <tr>
             <th>Course ID</th>
             <th>Name</th>
+            <th>Users</th>
           </tr>
         </thead>
         <tfoot>
           <tr>
             <th>Course ID</th>
             <th>Name</th>
+            <th>Users</th>
           </tr>
         </tfoot>
         <tbody>
           <tr v-for="course in courses">
               <td>{{ course.id }}</td>
               <td>{{ course.name }}</td>
-              <td><a class="delete"></a></td>
+              <td>{{ course.members }}</td>
+              <td><a class="delete" v-on:click="deleteCourse(course.id)"></a></td>
           </tr>
         </tbody>
       </table>
     </div>`,
+  methods: {
+    deleteCourse: function(id_) {
+      var url = "/api/course/" + id_;
+      fetch(url, {
+        method: "DELETE"
+      }).then(res => {
+        if (res.ok) {
+          alert("Course deleted successfully.");
+          var url = "/api/courses"
+          var vm = this
+          fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+              query: ""
+            }),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }).then(res => {
+            if (res.ok) {
+              return res.json();
+            }
+            throw new Error(res.statusText);
+          }).then(resJSON => {
+            var url = "/api/courses"
+            var vm = this
+            fetch(url, {
+              method: "POST",
+              body: JSON.stringify({
+                query: ""
+              }),
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }).then(res => {
+              if (res.ok) {
+                return res.json();
+              }
+              throw new Error(res.statusText);
+            }).then(resJSON => {
+              vm.courses = resJSON.courses;
+            }).catch(err => {
+              console.error(err);
+            });
+          }).catch(err => {
+            console.error(err);
+          });
+        }
+      }).catch(err_ => {
+        console.error(err_);
+      });
+    }
+  },
   data: function() { return {
     courses: []
   }},

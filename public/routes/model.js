@@ -356,6 +356,33 @@ router.post("/featured-courses", (req, res, next) => {
     });
 })
 
+router.delete("/course/:id", (req, res, next) => {
+  coursesCollection.doc(req.params.id).delete();
+  coursesCollection.doc(req.params.id).get().then((docData) => {
+    res.statusMessage = "Course wasn't deleted."
+    return res.status(500).json(err);
+  }).catch(err=> {
+    userCollection.get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let user = doc.data();
+          var newCourses = [];
+          if (user.courses) {
+            newCourses = user.courses;
+          }
+          newCourses.splice(newCourses.indexOf(req.params.id), 1);
+          console.error({courses: newCourses});
+          userCollection.doc(doc.id).update({courses: newCourses});
+        });
+        return res.status(200).json({message: "Course deleted successfully!"});
+      }).catch(error => {
+        console.error(error);
+        res.statusMessage = "Course wasn't deleted from users."
+        return res.status(500).json(error);
+      });
+  });
+});
+
 router.get("/course/:id", (req, res, next) => {
   let id_ = +req.params.id;
   coursesCollection
