@@ -400,7 +400,11 @@ Vue.component('ComponentG',{
     </div>
     <div class="field">
       <p class="control has-icons-left has-icons-right">
-        <input class="input" type="email" placeholder="CourseID" v-model="course">
+        <select v-model="course">
+          <option 
+            v-for="curso in courses"
+            v-bind:value="curso.id">{{ curso.name }}</option>
+        </select> 
       </p>
     </div>
     <button class="button is-success" v-on:click="enroll()">Enroll</button>
@@ -409,7 +413,8 @@ Vue.component('ComponentG',{
   data: function() { return {
     username: "",
     course: "",
-    message: ""
+    message: "",
+    courses: []
   }},
   methods: {
     enroll: function() {
@@ -444,6 +449,28 @@ Vue.component('ComponentG',{
         vm.message = err;
       });
     }
+  },
+  created: function() {
+    var url = "/api/courses"
+    var vm = this
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        query: ""
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      throw new Error(res.statusText);
+    }).then(resJSON => {
+      vm.courses = resJSON.courses;
+    }).catch(err => {
+      console.error(err);
+    });
   }
 })
 
