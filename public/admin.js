@@ -362,13 +362,66 @@ Vue.component('ComponentF',{
           <tr v-for="course in courses">
               <td>{{ course.id }}</td>
               <td>{{ course.name }}</td>
-              <td>{{ course.members }}</td>
+              <td>
+                <input :list="'data_' + course.id" name="users" :id="'inputlist_'+course.id">
+                <datalist :id="'data_' + course.id">
+                  <div v-for="member in course.members">
+                    <option :value="member"></option>
+                  </div>
+                </datalist>
+                <a class="button is-danger" v-on:click="removeUser('inputlist_'+course.id, course.id)">Remove</a>
+              </td>
               <td><a class="delete" v-on:click="deleteCourse(course.id)"></a></td>
           </tr>
         </tbody>
       </table>
     </div>`,
   methods: {
+    removeUser: function(input_id, course_id) {
+      var vm = this
+      var user = $("#" + input_id).val();
+      var data = {
+        userID: user,
+        course: course_id 
+      };
+      var url = "/api/unenroll";
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error(res.statusText);
+        }
+      }).then(resJSON => {
+          alert(resJSON.message);
+          var url = "/api/courses"
+          fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+              query: ""
+            }),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }).then(res => {
+            if (res.ok) {
+              return res.json();
+            }
+            throw new Error(res.statusText);
+          }).then(resJSON => {
+            vm.courses = resJSON.courses;
+          }).catch(err => {
+            console.error(err);
+          });
+      }).catch(err => {
+        alert(err);
+      });
+    },
     deleteCourse: function(id_) {
       var url = "/api/course/" + id_;
       fetch(url, {

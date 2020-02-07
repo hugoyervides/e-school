@@ -161,6 +161,38 @@ router.post("/enroll", (req, res, next) => {
     });
 })
 
+router.post("/unenroll", (req, res, next) => {
+  let usersRef = db.collection('users');
+  usersRef.doc(req.body.userID).get()
+    .then(doc => {
+      let user = doc.data();
+        var newCourses = [];
+        if (user.courses) {
+          newCourses = user.courses;
+        }
+
+        coursesCollection.doc(req.body.course).get().then((docData) => {
+          if (docData.exists) {
+            newCourses.splice(newCourses.indexOf(req.body.course), 1);
+            usersRef.doc(doc.id).update({courses: newCourses.filter(onlyUnique)});
+            var courseMembers = docData.data().members || [];
+            courseMembers.splice(courseMembers.indexOf(doc.id), 1);
+            coursesCollection.doc(req.body.course).update({members: courseMembers.filter(onlyUnique)});
+            return res.status(200).json({message: "Unenrolled user to course successfully."});
+          } else {
+            res.statusMessage = "Course not found.";
+            return res.status(404).json("Course not found.");
+          }
+        }).catch((fail) => {
+          res.statusMessage = fail;
+          res.status(500).json(fail);
+        });
+    }).catch(err => {
+      res.statusMessage = "User not found.";
+      res.status(500).json("User not found");
+    });
+})
+
 /*
 {
   name: "abc"
