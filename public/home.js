@@ -11,7 +11,9 @@ Vue.component("coursecard", {
               <div class="card">
                 <div class="card-image">
                     <figure class="image is-256x256">
-                      <img v-bind:src="img" alt="Placeholder image">
+                      <div v-bind:style="{ backgroundImage: 'url(' + img + ')', backgroundSize: 'cover' }">
+                        <div style="width: 480px; height: 480px"></div>
+                      </div>
                     </figure>
                 </div>
                 <div class="card-content">

@@ -226,16 +226,19 @@ Vue.component('ComponentE',{
     </div>
   </div>
 
-  <div class="field">
-    <label class="label">Instructor ID</label>
-    <div class="control has-icons-right">
-      <input id="author-input" class="input" type="text" v-model="author">
-      <span id="usernameIcon" style="visibility: hidden" class="icon is-small is-right">
-        <i class="fas fa-check"></i>
-      </span>
-    </div>
+  <h1 class="title">Author</h1>
+  <div class="container">
+    <div class="field">
+      <p class="control">
+        <input class="input" type="text" placeholder="Name" v-model="authorName">
+      </p>
+      <p class="control">
+        <input class="input" type="text" placeholder="Title" v-model="authorTitle">
+      </p>
+      <p class="control">
+        <input class="input" type="text" placeholder="Image URL" v-model="authorResourceURL">
+      </p>
   </div>
-
   <h1 class="title">Videos</h1>
     <div class="columns is-multiline is-desktop">
       <videoviewer 
@@ -246,7 +249,6 @@ Vue.component('ComponentE',{
         v-bind:description = "video.description">
       </videoviewer>
     </div>
-  <div>
     <div class="field">
       <p class="control">
         <input class="input" type="text" placeholder="Resource URL" v-model="videoResourceURL">
@@ -269,10 +271,12 @@ Vue.component('ComponentE',{
   </div>`,
   data: function(){
     return{
+      authorResourceURL: "",
+      authorTitle: "",
+      authorName: "",
       name: "",
       description: "",
       image: "",
-      author: "",
       videoResourceURL: "",
       videoTitle: "",
       videoDescription: "",
@@ -297,12 +301,21 @@ Vue.component('ComponentE',{
       this.videoDescription = "";
     },
     postCourse: function(){
+      // if (!this.name || !this.description || !this.img || !this.authorName || !this.authorTitle || !this.authorResourceURL) {
+      //   console.error(this);
+      //   alert("Fill the missing parameters!");
+      //   return;
+      // }
       var vm = this;
       axios.post('/api/course',{
         name: this.name,
         description: this.description,
         img: this.image,
-        author: this.author,
+        author: {
+          name: this.authorName,
+          img: this.authorResourceURL,
+          title: this.authorTitle
+        },
         reviews: ""
       }).then((response) =>{
         this.videos.forEach(video => {

@@ -24,9 +24,11 @@ Vue.component("coursecard", {
                   </div>
                 </div>
                 <div class="card-image tile is-4">
-                    <figure class="image">
-                      <img v-bind:src="img" alt="Placeholder image">
-                    </figure>
+                  <figure class="image is-256x256">
+                    <div v-bind:style="{ backgroundImage: 'url(' + img + ')', backgroundSize: 'cover' }">
+                      <div style="width: 256px; height: 256px"></div>
+                    </div>
+                  </figure>
                 </div>
               </div>
             </div>`,
@@ -121,9 +123,11 @@ Vue.component("relatedcourse", {
   template: `
               <div class="card tile">
                 <div class="card-image tile is-6">
-                    <figure class="image">
-                      <img v-bind:src="img" alt="Placeholder image">
-                    </figure>
+                  <figure class="image is-256x256">
+                    <div v-bind:style="{ backgroundImage: 'url(' + img + ')', backgroundSize: 'cover' }">
+                      <div style="width: 256px; height: 256px"></div>
+                    </div>
+                  </figure>
                 </div>
                 <div class="card-content tile is-6">
                   <div class="media">
