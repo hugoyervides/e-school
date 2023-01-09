@@ -30,7 +30,7 @@
     "bulma-start": "0.0.3",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
-    "firebase-admin": "^8.9.1",
+    "firebase-admin": "^11.4.1",
     "lodash.debounce": "^4.0.8",
     "moment": "^2.24.0",
     "nodemon": "^2.0.2",
